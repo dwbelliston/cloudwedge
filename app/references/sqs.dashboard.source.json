@@ -1,0 +1,437 @@
+{
+  "periodOverride": "inherit",
+  "widgets": [
+    {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 2,
+      "properties": {
+        "markdown": "\n# Convention 2020 | Queues \n#### DEV | SQS | Application Performance Monitoring"
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 2,
+      "width": 24,
+      "height": 2,
+      "properties": {
+        "markdown": "## Orders\n[button: ↗️ View Queue](https://us-west-2.console.aws.amazon.com/sqs/v2/home?region=us-west-2#/queues/https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2F270081859553%2FOrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo) | Name | OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 4,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "Orders Added",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "NumberOfMessagesSent",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            { "color": "#2c3e50", "label": "Time Range Sum", "stat": "Sum" }
+          ]
+        ],
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 6,
+      "y": 4,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "In Queue",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateNumberOfMessagesVisible",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#16a085",
+              "label": "Last 1 Min Sum",
+              "period": 60,
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 4,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "In Flight",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateNumberOfMessagesNotVisible",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#2ecc71",
+              "label": "Last 1 Min Sum",
+              "period": 60,
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 18,
+      "y": 4,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "Oldest message age",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateAgeOfOldestMessage",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#c0392b",
+              "label": "Last 1 Min Sum",
+              "period": 60,
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 7,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "view": "timeSeries",
+        "title": "Orders Added vs In Queue Rolling",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "NumberOfMessagesSent",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#2c3e50",
+              "label": "Orders Added (Interval @ 5 Min Sum)",
+              "stat": "Sum"
+            }
+          ],
+          [
+            "AWS/SQS",
+            "ApproximateNumberOfMessagesVisible",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#16a085",
+              "label": "Orders In Queue (Interval @ 5 Min Max)",
+              "stat": "Maximum"
+            }
+          ]
+        ],
+        "yAxis": {}
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 7,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "view": "timeSeries",
+        "title": "Consuming Rate Rolling",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateNumberOfMessagesNotVisible",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#2ecc71",
+              "label": "Orders In Flight (Interval @ 5 Min Sum)",
+              "stat": "Sum"
+            }
+          ]
+        ],
+        "yAxis": {}
+      }
+    },
+    {
+      "type": "metric",
+      "x": 18,
+      "y": 7,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "view": "timeSeries",
+        "title": "Oldest Record Rolling",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateAgeOfOldestMessage",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "color": "#c0392b",
+              "label": "Oldest Record Age (Interval @ 5 Min Max)",
+              "stat": "Maximum"
+            }
+          ]
+        ],
+        "annotations": {
+          "horizontal": [
+            {
+              "value": 3600,
+              "color": "#c0392b",
+              "fill": "above",
+              "label": "1 Hour",
+              "yAxis": "left"
+            }
+          ]
+        },
+        "yAxis": {}
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 13,
+      "width": 24,
+      "height": 2,
+      "properties": {
+        "markdown": "## Orders DLQ\n[button: ↗️ View Queue](https://us-west-2.console.aws.amazon.com/sqs/v2/home?region=us-west-2#/queues/https%3A%2F%2Fsqs.us-west-2.amazonaws.com%2F270081859553%2FOrdersQueueStackDev5-OrdersDLQDev5BA5C1CD9-IP0YDTGNBYPS.fifo) | Name | OrdersQueueStackDev5-OrdersDLQDev5BA5C1CD9-IP0YDTGNBYPS.fifo"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 15,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "DLQ | Orders Added",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "NumberOfMessagesSent",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersDLQDev5BA5C1CD9-IP0YDTGNBYPS.fifo",
+            { "color": "#2c3e50", "label": "Time Range Sum", "stat": "Sum" }
+          ]
+        ],
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 6,
+      "y": 15,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "DLQ | In Queue",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateNumberOfMessagesVisible",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersDLQDev5BA5C1CD9-IP0YDTGNBYPS.fifo",
+            {
+              "color": "#16a085",
+              "label": "Last 1 Min Sum",
+              "period": 60,
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 15,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "DLQ | In Flight",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateNumberOfMessagesNotVisible",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersDLQDev5BA5C1CD9-IP0YDTGNBYPS.fifo",
+            {
+              "color": "#2ecc71",
+              "label": "Last 1 Min Sum",
+              "period": 60,
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 18,
+      "y": 15,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "view": "singleValue",
+        "title": "DLQ | Oldest message age",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            "AWS/SQS",
+            "ApproximateAgeOfOldestMessage",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersDLQDev5BA5C1CD9-IP0YDTGNBYPS.fifo",
+            {
+              "color": "#c0392b",
+              "label": "Last 1 Min Sum",
+              "period": 60,
+              "stat": "Sum"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 18,
+      "width": 24,
+      "height": 2,
+      "properties": {
+        "markdown": "## Service Quotas\n[button: ↗️ View Service Quotas](https://us-west-2.console.aws.amazon.com/servicequotas/home?region=us-west-2#!/services)"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 20,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "view": "timeSeries",
+        "title": "SQS | Approx FIFO Throughput",
+        "region": "us-west-2",
+        "metrics": [
+          [
+            {
+              "label": "(Send + Receive + Delete) per second",
+              "color": "#2980b9",
+              "expression": "((m1SendSum + m2ReceiveSum + m3DeleteSum) / 60)"
+            }
+          ],
+          [
+            "AWS/SQS",
+            "NumberOfMessagesSent",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "label": "NumberOfMessagesSent",
+              "period": 60,
+              "stat": "Sum",
+              "visible": false,
+              "id": "m1SendSum"
+            }
+          ],
+          [
+            "AWS/SQS",
+            "NumberOfMessagesReceived",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "label": "NumberOfMessagesReceived",
+              "period": 60,
+              "stat": "Sum",
+              "visible": false,
+              "id": "m2ReceiveSum"
+            }
+          ],
+          [
+            "AWS/SQS",
+            "NumberOfMessagesDeleted",
+            "QueueName",
+            "OrdersQueueStackDev5-OrdersQueueDev5C69E539B-1FKD7DQYVBD1S.fifo",
+            {
+              "label": "NumberOfMessagesDeleted",
+              "period": 60,
+              "stat": "Sum",
+              "visible": false,
+              "id": "m3DeleteSum"
+            }
+          ]
+        ],
+        "annotations": {
+          "horizontal": [
+            {
+              "value": 300,
+              "color": "#c0392b",
+              "fill": "above",
+              "label": "Service Limit is 300/s",
+              "yAxis": "left"
+            }
+          ]
+        },
+        "yAxis": {}
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 26,
+      "width": 24,
+      "height": 1,
+      "properties": {
+        "markdown": ""
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 27,
+      "width": 24,
+      "height": 2,
+      "properties": {
+        "markdown": "#### References:\n- [SQS | List of metrics | AWS](docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html)\n- [SQS | Guide to monitoring | Blue Matador](https://www.bluematador.com/blog/how-to-monitor-amazon-sqs-with-cloudwatch)\n      "
+      }
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >
+  CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your
+  ability to get up and running with native AWS monitoring services. This is the spoke template
+  that gets deployed from the hub.
+
+  The template deploys a thin spoke. Event rules are created to forward events on to the hub that
+  are relevant to CloudWedge. A role is created, that can be assumed by the lambdas running in the hub
+  account so they can work in the spoke.
+
+Parameters:
+
+  CloudWedgeEnvironment:
+    Type: String
+    Description: CloudWedge running environment to target (prd or dev)
+    Default: prd
+
+  CloudWedgeIamRoleNamePrefix:
+    Type: String
+    Description: Prefix to add to all the iam roles that are created (include the hyphen)
+
+  HubAccountId:
+    Type: String
+    Description: Hub account id
+
+  HubPrivateAssetsS3Bucket:
+    Type: String
+    Description: Hub account private assets bucket
+
+  HubAccountWorkerRoleArn:
+    Type: String
+    Description: Arn of the role in the hub account that the lambdas will use to assume a role into the spoke
+
+  HubCloudWedgeStepFunctionBuilderArn:
+    Type: String
+    Description: Hub Step function builder Id
+
+  HubDebugLocalRoleArn:
+    Type: String
+    Description: 'Local role for debug use'
+    Default: ""
+
+Conditions:
+  IsHubAccount: !Equals
+    - !Ref HubAccountId
+    - !Ref AWS::AccountId
+
+  IsUseIamRoleNamePrefix: !Not
+    - !Equals
+      - !Ref CloudWedgeIamRoleNamePrefix
+      - ""
+  IsUseDebugLocalRole: !Not
+    - !Equals
+      - !Ref HubDebugLocalRoleArn
+      - ""
+
+Resources:
+
+  # ---------------------------------------------------------------------------
+  # Role
+  # Used by the hub accounts step function lambdas to assume into the spoke
+  # read resources, and create cloudformation stacks with alarms
+  # ---------------------------------------------------------------------------
+  CloudWedgeWorkerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
+        - "cloudwedge-spoke-worker-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Allow hub role to assume me
+          - Effect: "Allow"
+            Principal:
+              AWS: !Ref HubAccountWorkerRoleArn
+            Action: "sts:AssumeRole"
+          - !If
+            - IsUseDebugLocalRole
+            - Effect: "Allow"
+              Principal:
+                AWS: !Ref HubDebugLocalRoleArn
+              Action: "sts:AssumeRole"
+            - !Ref AWS::NoValue
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      Policies:
+        - PolicyName: AccessCloudWatch
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudWatchAlarms
+                Effect: Allow
+                Action:
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:PutMetricAlarm
+                  - cloudwatch:DeleteAlarms
+                Resource: !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+              - Sid: AllowCloudWatchDashboard
+                Effect: Allow
+                Action:
+                  - cloudwatch:GetDashboard
+                  - cloudwatch:ListDashboards
+                  - cloudwatch:PutDashboard
+                  - cloudwatch:ListMetrics
+                  - cloudwatch:DeleteDashboards
+                Resource:
+                  - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+                  - !Sub "arn:aws:cloudwatch::${AWS::AccountId}:dashboard/cloudwedge-*"
+        - PolicyName: AccessCloudFormation
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:UpdateStack
+                  - cloudformation:DeleteStack
+                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudwedge-*/*"
+              - Sid: AllowCloudFormationList
+                Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: "*"
+        - PolicyName: AccessS3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                  - s3:GetObjectVersion
+                  - s3:GetLifecycleConfiguration
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:PutLifecycleConfiguration
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:s3:::${HubPrivateAssetsS3Bucket}"
+                  - !Sub "arn:${AWS::Partition}:s3:::${HubPrivateAssetsS3Bucket}/*"
+
+  # ---------------------------------------------------------------------------
+  # Role
+  # Match events to cloudwedge tags
+  # ---------------------------------------------------------------------------
+  # Role for event rule to use to start step function
+  CloudWedgeTagEventRuleRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-hub-event-rule-role"
+        - "cloudwedge-hub-event-rule-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - !If
+          - IsHubAccount
+          # If its the hub account, allow invoking step function
+          - PolicyName: StatesExecutionPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: states:StartExecution
+                  Resource: !Ref HubCloudWedgeStepFunctionBuilderArn
+          # If its not the hub account, allow forwarding to hub
+          - PolicyName: AllowForwardToHubPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: events:PutEvents
+                  Resource: !Sub "arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default"
+
+  # ---------------------------------------------------------------------------
+  # Event Rules
+  # Match events to cloudwedge tags
+  # ---------------------------------------------------------------------------
+  CloudWedgeTagEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: >
+        Match events for any cloudwedge tag and send to step function so the alarms
+        can be updated
+      EventPattern:
+        detail-type:
+          - Tag Change on Resource
+        source:
+          - aws.tag
+        detail:
+          changed-tag-keys:
+            - { "prefix": "cloudwedge:" }
+          service:
+            - { "anything-but": ["cloudformation"] }
+      State: ENABLED
+      Targets:
+        - !If
+          - IsHubAccount
+          # If its the hub account, forward events to the hub step function
+          - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-steps-builder"
+          # If its not the hub account, forward events to the hub event bus
+          - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-hub-bus"
+
+  CloudWedgeAutoscalingTagEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: >
+        Match events for any cloudwedge tag changed on autoscaling group and send to step function so the alarms
+        can be updated
+      EventPattern:
+        detail-type:
+          - AWS API Call via CloudTrail
+        source:
+          - aws.autoscaling
+        detail:
+          eventName: ["DeleteTags", "CreateOrUpdateTags"]
+          requestParameters:
+            tags:
+              key:
+                - { "prefix": "cloudwedge:" }
+      State: ENABLED
+      Targets:
+        - !If
+          - IsHubAccount
+          # If its the hub account, forward events to the hub step function
+          - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-steps-builder"
+          # If its not the hub account, forward events to the hub event bus
+          - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
+            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+            Id: "cloudwedge-tag-event-to-hub-bus"
+
+
+  # TODO: Custom resource invoke to tear down stacks

@@ -1,0 +1,15 @@
+{
+  "RequestType": "Delete",
+  "ServiceToken": "arn:aws:lambda:us-west-2:ACCOUNTID:function:nse-db-monitoring-spoke-cleanup",
+  "ResponseURL": "https://cloudformation-custom-resource-response-uswest2.s3-us-west-2.amazonaws.com/arn%3Aaws%3Acloudformation%3Aus-west-2%3A365733202121%3Astack/StackSet-nse-db-monitoring-spoke-bd46ba4f-6a37-4942-910a-bebb369640c8/62ec34d0-be02-11e9-9e99-0211d8bec7e2%7CSpokeCleanUpLambda%7C90ffb87c-db9f-42c4-9454-3e9d6f70d8eb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20190813T194450Z&X-Amz-SignedHeaders=host&X-Amz-Expires=7200&X-Amz-Credential=AKIA54RCMT6SG7Y5BKPL%2F20190813%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Signature=3d3f8195e10a8037ee8e018fca74d174690dddd88de8d5ac89693f549ccc83a1",
+  "StackId": "arn:aws:cloudformation:us-west-2:365733202121:stack/StackSet-nse-db-monitoring-spoke-bd46ba4f-6a37-4942-910a-bebb369640c8/62ec34d0-be02-11e9-9e99-0211d8bec7e2",
+  "RequestId": "90ffb87c-db9f-42c4-9454-3e9d6f70d8eb",
+  "LogicalResourceId": "SpokeCleanUpLambda",
+  "PhysicalResourceId": "SpokeCleanupId",
+  "ResourceType": "Custom::SpokeCleanupLambda",
+  "ResourceProperties": {
+    "ServiceToken": "arn:aws:lambda:us-west-2:ACCOUNTID:function:nse-db-monitoring-spoke-cleanup",
+    "SpokeAccountLambdaRole": "nse-db-monitoring-spoke-alarm-maker-lambda-role",
+    "SpokeAccountId": "ACCOUNTID"
+  }
+}

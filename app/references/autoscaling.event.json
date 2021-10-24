@@ -1,0 +1,55 @@
+{
+  "version": "0",
+  "id": "949b1e91-a818-67b5-fc18-6717ee9db779",
+  "detail-type": "AWS API Call via CloudTrail",
+  "source": "aws.autoscaling",
+  "account": "ACCOUNTID",
+  "time": "2020-09-22T16:00:33Z",
+  "region": "us-west-2",
+  "resources": [],
+  "detail": {
+    "eventVersion": "1.05",
+    "userIdentity": {
+      "type": "AssumedRole",
+      "principalId": "AROAJ4LHD2ZAYD3ARYX4K:dustin@1strategy.com",
+      "arn": "arn:aws:sts::ACCOUNTID:assumed-role/1S-Admins/dustin@1strategy.com",
+      "accountId": "ACCOUNTID",
+      "accessKeyId": "ASIA4IHZ4HYP5WSCIVP7",
+      "sessionContext": {
+        "sessionIssuer": {
+          "type": "Role",
+          "principalId": "AROAJ4LHD2ZAYD3ARYX4K",
+          "arn": "arn:aws:iam::ACCOUNTID:role/1S-Admins",
+          "accountId": "ACCOUNTID",
+          "userName": "1S-Admins"
+        },
+        "webIdFederationData": {},
+        "attributes": {
+          "mfaAuthenticated": "true",
+          "creationDate": "2020-09-22T15:30:55Z"
+        }
+      }
+    },
+    "eventTime": "2020-09-22T16:00:33Z",
+    "eventSource": "autoscaling.amazonaws.com",
+    "eventName": "CreateOrUpdateTags",
+    "awsRegion": "us-west-2",
+    "sourceIPAddress": "98.202.88.75",
+    "userAgent": "aws-internal/3 aws-sdk-java/1.11.848 Linux/4.9.217-0.3.ac.206.84.332.metal1.x86_64 OpenJDK_64-Bit_Server_VM/25.262-b10 java/1.8.0_262 vendor/Oracle_Corporation",
+    "requestParameters": {
+      "tags": [
+        {
+          "propagateAtLaunch": true,
+          "key": "cloudwedge:level",
+          "value": "critical",
+          "resourceType": "auto-scaling-group",
+          "resourceId": "msa-plmss-ratabase"
+        }
+      ]
+    },
+    "responseElements": null,
+    "requestID": "9a69057e-c659-4836-9153-497d4be35962",
+    "eventID": "d8fdabc0-0b6b-488e-9ee3-0e7fe49c518a",
+    "eventType": "AwsApiCall"
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "Comment": "CloudWedge Builder",
+  "StartAt": "GetResources",
+  "States": {
+    "GetResources": {
+      "Type": "Task",
+      "Resource": "${GetResourcesFunctionArn}",
+      "ResultPath": "$",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "CatchAllFail"
+        }
+      ],
+      "Next": "TriageStacks"
+    },
+    "TriageStacks": {
+      "Type": "Task",
+      "Resource": "${TriageStacksFunctionArn}",
+      "ResultPath": "$.triage",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "CatchAllFail"
+        }
+      ],
+      "Next": "HasOrphanedStacks"
+    },
+    "HasOrphanedStacks": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.triage.hasOrphanedStacks",
+          "BooleanEquals": true,
+          "Next": "DeleteStacks"
+        }
+      ],
+      "Default": "HasResources"
+    },
+    "DeleteStacks": {
+      "Type": "Map",
+      "ItemsPath": "$.triage.orphanedStacks",
+      "MaxConcurrency": 5,
+      "Parameters": {
+        "stack.$": "$$.Map.Item.Value",
+        "targetAccountId.$": "$.targetAccountId"
+      },
+      "Iterator": {
+        "StartAt": "DeleteStack",
+        "States": {
+          "DeleteStack": {
+            "Type": "Task",
+            "Resource": "${DeleteStackFunctionArn}",
+            "ResultPath": "$.stackStatus",
+            "Next": "WaitForDelete"
+          },
+          "WaitForDelete": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::states:startExecution.sync",
+            "Parameters": {
+              "StateMachineArn": "${CloudWedgeBuilderStackStatusStateMachineArn}",
+              "Input": {
+                "targetAccountId.$": "$.targetAccountId",
+                "stackStatus.$": "$.stackStatus",
+                "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$": "$$.Execution.Id"
+              }
+            },
+            "Retry": [
+              {
+                "ErrorEquals": ["StepFunctions.ExecutionLimitExceeded"]
+              }
+            ],
+            "Catch": [
+              {
+                "ErrorEquals": ["States.ALL"],
+                "Next": "DeleteFailed"
+              }
+            ],
+            "Next": "DeleteCompleted"
+          },
+          "DeleteCompleted": {
+            "Type": "Succeed"
+          },
+          "DeleteFailed": {
+            "Type": "Fail",
+            "Cause": "CloudWedge vs Hermes didnt end well"
+          }
+        }
+      },
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "CatchAllFail"
+        }
+      ],
+      "ResultPath": "$.delete",
+      "Next": "HasResources"
+    },
+    "HasResources": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.isEmpty",
+          "BooleanEquals": true,
+          "Next": "Complete"
+        }
+      ],
+      "Default": "CreateStacks"
+    },
+    "CreateStacks": {
+      "Type": "Task",
+      "Resource": "${CreateStacksFunctionArn}",
+      "ResultPath": "$",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "CatchAllFail"
+        }
+      ],
+      "Next": "DeployStacks"
+    },
+    "DeployStacks": {
+      "Type": "Map",
+      "ItemsPath": "$.stacks",
+      "MaxConcurrency": 5,
+      "Iterator": {
+        "StartAt": "DeployStack",
+        "States": {
+          "DeployStack": {
+            "Type": "Task",
+            "Resource": "${DeployStackFunctionArn}",
+            "ResultPath": "$.stackStatus",
+            "Next": "WaitForDeploy"
+          },
+          "WaitForDeploy": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::states:startExecution.sync",
+            "Parameters": {
+              "StateMachineArn": "${CloudWedgeBuilderStackStatusStateMachineArn}",
+              "Input": {
+                "stackStatus.$": "$.stackStatus",
+                "targetAccountId.$": "$.targetAccountId",
+                "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$": "$$.Execution.Id"
+              }
+            },
+            "Retry": [
+              {
+                "ErrorEquals": ["StepFunctions.ExecutionLimitExceeded"]
+              }
+            ],
+            "Catch": [
+              {
+                "ErrorEquals": ["States.ALL"],
+                "Next": "DeployFailed"
+              }
+            ],
+            "Next": "DeployCompleted"
+          },
+          "DeployCompleted": {
+            "Type": "Succeed"
+          },
+          "DeployFailed": {
+            "Type": "Fail",
+            "Cause": "CloudWedge vs Hermes didnt end well"
+          }
+        }
+      },
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "CatchAllFail"
+        }
+      ],
+      "ResultPath": "$.deploy",
+      "Next": "Complete"
+    },
+    "Complete": {
+      "Type": "Succeed"
+    },
+    "CatchAllFail": {
+      "Type": "Fail",
+      "Cause": "CloudWedge vs Hermes didnt end well"
+    }
+  }
+}

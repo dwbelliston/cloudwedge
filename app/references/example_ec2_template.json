@@ -1,0 +1,82 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Stack for all ec2 instances that have owner cloudwedge. This stack is created by a hub account and his updated dynamically on tag updates.",
+  "Resources": {
+    "01e8305510cc25778CloudWedgeCPUUtilization": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Instance=private-instance-made-from-template Metric=CPUUtilization AlertLevel=medium Type=EC2 AlertOwner=cloudwedge",
+        "Namespace": "AWS/EC2",
+        "MetricName": "CPUUtilization",
+        "Statistic": "Average",
+        "Period": 300,
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-01e8305510cc25778"
+          }
+        ],
+        "AlarmName": "cloudwedge-ec2-cloudwedge-medium-i-01e8305510cc25778-cpu",
+        "TreatMissingData": "breaching",
+        "EvaluationPeriods": 5,
+        "Threshold": 90,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "AlarmActions": ["arn:aws:sns:us-west-2:ACCOUNTID:cloudwedge-ingest"]
+      }
+    },
+    "01e8305510cc25778CloudWedgeStatusCheckFailedInstance": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Instance=private-instance-made-from-template Metric=StatusCheckFailed_Instance AlertLevel=medium Type=EC2 AlertOwner=cloudwedge",
+        "Namespace": "AWS/EC2",
+        "MetricName": "StatusCheckFailed_Instance",
+        "Statistic": "Average",
+        "Period": 300,
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-01e8305510cc25778"
+          }
+        ],
+        "AlarmName": "cloudwedge-ec2-cloudwedge-medium-i-01e8305510cc25778-instance-failed",
+        "EvaluationPeriods": 3,
+        "Threshold": 1,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "AlarmActions": ["arn:aws:sns:us-west-2:ACCOUNTID:cloudwedge-ingest"]
+      }
+    },
+    "01e8305510cc25778CloudWedgeStatusCheckFailedSystem": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Instance=private-instance-made-from-template Metric=StatusCheckFailed_System AlertLevel=medium Type=EC2 AlertOwner=cloudwedge",
+        "Namespace": "AWS/EC2",
+        "MetricName": "StatusCheckFailed_System",
+        "Statistic": "Average",
+        "Period": 300,
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-01e8305510cc25778"
+          }
+        ],
+        "AlarmName": "cloudwedge-ec2-cloudwedge-medium-i-01e8305510cc25778-system-failed",
+        "EvaluationPeriods": 2,
+        "Threshold": 1,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:ACCOUNTID:cloudwedge-ingest",
+          {
+            "Fn::Sub": "arn:aws:automate:${AWS::Region}:ec2:recover"
+          }
+        ]
+      }
+    },
+    "CloudWedgecloudwedgeec2Dashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardBody": "{\"widgets\": [{\"type\": \"text\", \"x\": 0, \"y\": 0, \"width\": 24, \"height\": 2, \"properties\": {\"markdown\": \"# cloudwedge\\n###### CREATED BY CLOUDWEDGE\"}}, {\"type\": \"metric\", \"width\": 24, \"height\": 6, \"properties\": {\"metrics\": [[\"AWS/EC2\", \"CPUUtilization\", \"InstanceId\", \"i-01e8305510cc25778\"]], \"view\": \"timeSeries\", \"stacked\": false, \"region\": \"us-west-2\", \"title\": \"CPUUtilization\", \"legend\": {\"position\": \"right\"}, \"yAxis\": {\"left\": {\"label\": \"\"}, \"right\": {\"label\": \"\"}}}, \"x\": 0, \"y\": 2}, {\"type\": \"metric\", \"width\": 6, \"height\": 6, \"properties\": {\"metrics\": [[\"AWS/EC2\", \"StatusCheckFailed_Instance\", \"InstanceId\", \"i-01e8305510cc25778\"]], \"view\": \"timeSeries\", \"stacked\": false, \"region\": \"us-west-2\", \"title\": \"StatusCheckFailed_Instance\", \"legend\": {\"position\": \"right\"}, \"yAxis\": {\"left\": {\"label\": \"\"}, \"right\": {\"label\": \"\"}}}}, {\"type\": \"metric\", \"width\": 6, \"height\": 6, \"properties\": {\"metrics\": [[\"AWS/EC2\", \"StatusCheckFailed_System\", \"InstanceId\", \"i-01e8305510cc25778\"]], \"view\": \"timeSeries\", \"stacked\": false, \"region\": \"us-west-2\", \"title\": \"StatusCheckFailed_System\", \"legend\": {\"position\": \"right\"}, \"yAxis\": {\"left\": {\"label\": \"\"}, \"right\": {\"label\": \"\"}}}}]}",
+        "DashboardName": "cloudwedge-cloudwedge-ec2"
+      }
+    }
+  }
+}

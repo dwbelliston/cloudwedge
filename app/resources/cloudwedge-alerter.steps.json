@@ -1,0 +1,124 @@
+{
+  "StartAt": "Choose Level",
+  "States": {
+    "Choose Level": {
+      "Comment": "Choose the alert level path to take based on the incoming alert attribute",
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.level",
+          "StringEquals": "low",
+          "Next": "Low"
+        },
+        {
+          "Variable": "$.level",
+          "StringEquals": "medium",
+          "Next": "Medium"
+        },
+        {
+          "Variable": "$.level",
+          "StringEquals": "high",
+          "Next": "High"
+        },
+        {
+          "Variable": "$.level",
+          "StringEquals": "critical",
+          "Next": "Critical"
+        }
+      ],
+      "Default": "Failed"
+    },
+    "Low": {
+      "Type": "Pass",
+      "Parameters": {
+        "subject.$": "$.snsSubject",
+        "message.$": "$.snsMessage",
+        "owner.$": "$.owner",
+        "resourceName.$": "$.resourceName",
+        "eventType": "alert",
+        "level": "low"
+      },
+      "Next": "Publish"
+    },
+    "Medium": {
+      "Type": "Pass",
+      "Parameters": {
+        "subject.$": "$.snsSubject",
+        "message.$": "$.snsMessage",
+        "owner.$": "$.owner",
+        "resourceName.$": "$.resourceName",
+        "eventType": "alert",
+        "level": "medium"
+      },
+      "Next": "Publish"
+    },
+    "High": {
+      "Type": "Pass",
+      "Parameters": {
+        "subject.$": "$.snsSubject",
+        "message.$": "$.snsMessage",
+        "owner.$": "$.owner",
+        "resourceName.$": "$.resourceName",
+        "eventType": "alert",
+        "level": "high"
+      },
+      "Next": "Publish"
+    },
+    "Critical": {
+      "Type": "Pass",
+      "Parameters": {
+        "subject.$": "$.snsSubject",
+        "message.$": "$.snsMessage",
+        "owner.$": "$.owner",
+        "resourceName.$": "$.resourceName",
+        "eventType": "alert",
+        "level": "critical"
+      },
+      "Next": "Publish"
+    },
+    "Publish": {
+      "Type": "Parallel",
+      "End": true,
+      "Branches": [
+        {
+          "StartAt": "Publish to Topic",
+          "States": {
+            "Publish to Topic": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::sns:publish",
+              "Comment": "Publish the notification to the supplied topic",
+              "Parameters": {
+                "TopicArn": "${CloudWedgeAlertsTopicArn}",
+                "Subject.$": "$.subject",
+                "Message.$": "$.message",
+                "MessageStructure": "json",
+                "MessageAttributes": {
+                  "level": {
+                    "DataType": "String",
+                    "StringValue.$": "$.level"
+                  },
+                  "owner": {
+                    "DataType": "String",
+                    "StringValue.$": "$.owner"
+                  }
+                }
+              },
+              "End": true
+            }
+          }
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error_step_alerter",
+          "Next": "Failed"
+        }
+      ]
+    },
+    "Failed": {
+      "Type": "Fail",
+      "Cause": "CloudWedge has let us down"
+    }
+  }
+}

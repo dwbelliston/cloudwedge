@@ -1,0 +1,42 @@
+{
+  "event": {
+    "version": "0",
+    "id": "8b1908aa-65f1-b5ae-a536-998165d03168",
+    "detail-type": "Tag Change on Resource",
+    "source": "aws.tag",
+    "account": "ACCOUNTID",
+    "time": "2021-01-16T01:51:27Z",
+    "region": "us-west-2",
+    "resources": [
+      "arn:aws:lambda:us-west-2:ACCOUNTID:function:teardown_step_functions"
+    ],
+    "detail": {
+      "changed-tag-keys": ["cloudwedge:active"],
+      "service": "lambda",
+      "resource-type": "function",
+      "version": 6,
+      "tags": { "cloudwedge:active": "trues" }
+    }
+  },
+  "targetAccountId": "ACCOUNTID",
+  "ownerResources": {
+    "cloudwedge": {
+      "ec2": [
+        {
+          "service": "ec2",
+          "name": null,
+          "uniqueId": "i-0588d57988d34fa26",
+          "cloudwatchDimensionId": "i-0588d57988d34fa26",
+          "owner": "cloudwedge",
+          "tags": [
+            { "Key": "cloudwedge:active", "Value": "true" },
+            { "Key": "user-discovery:user", "Value": "dustin@1strategy.com" }
+          ],
+          "ec2State": "running",
+          "ec2DetailedMonitoring": "disabled"
+        }
+      ]
+    }
+  },
+  "isEmpty": false
+}

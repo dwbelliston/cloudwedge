@@ -1,0 +1,70 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GetResourcesFunction",
+            "type": "python",
+            "request": "attach",
+            "port": 5858,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/.aws-sam/build/GetResourcesFunction",
+                    "remoteRoot": "/var/task"
+                }
+            ]
+        },
+        {
+            "name": "CreateStacksFunction",
+            "type": "python",
+            "request": "attach",
+            "port": 5858,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/.aws-sam/build/CreateStacksFunction",
+                    "remoteRoot": "/var/task"
+                }
+            ]
+        },
+        {
+            "name": "DeployStackFunction",
+            "type": "python",
+            "request": "attach",
+            "port": 5858,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/.aws-sam/build/DeployStackFunction",
+                    "remoteRoot": "/var/task"
+                }
+            ]
+        },
+        {
+            "name": "IngestAlertFunction",
+            "type": "python",
+            "request": "attach",
+            "port": 5858,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/.aws-sam/build/IngestAlertFunction",
+                    "remoteRoot": "/var/task"
+                }
+            ]
+        },
+        {
+            "name": "CleanupResourcesFunction",
+            "type": "python",
+            "request": "attach",
+            "port": 5858,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/.aws-sam/build/CleanupResourcesFunction",
+                    "remoteRoot": "/var/task"
+                }
+            ]
+        }
+    ]
+ }

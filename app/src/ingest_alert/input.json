@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-west-2:12345678:cloudwedge-ingest:d8e14d21-0d54-45a4-8188-d00c8d8b5367",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "b8d4f887-4825-50d1-9716-ae887a73b1c8",
+        "TopicArn": "arn:aws:sns:us-west-2:12345678:cloudwedge-ingest",
+        "Subject": "ALARM: \"cloudwedge-ec2-cloudwedge-medium-i-02c69ba04c16ab966-cpu\" in US West (Oregon)",
+        "Message": "{\"AlarmName\":\"cloudwedge-ec2-cloudwedge-medium-i-02c69ba04c16ab966-cpu\",\"AlarmDescription\":\"Resource=1s-dustin-stress-and-itgoesonononononon Metric=ApplicationRequests2xxanditgoesonononon Level=critical Type=AWS/ElasticBeanstalk Owner=cloudwedge\",\"AWSAccountId\":\"365733202121\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 1 out of the last 1 datapoints [0.0 (02/10/19 23:15:00)] was not greater than or equal to the threshold (90.0) (minimum 1 datapoint for ALARM -> ALARM transition).\",\"StateChangeTime\":\"2019-10-02T23:17:41.997+0000\",\"Region\":\"US West (Oregon)\",\"OldStateValue\":\"ALARM\",\"Trigger\":{\"MetricName\":\"CPUUtilization\",\"Namespace\":\"AWS/EC2\",\"StatisticType\":\"Statistic\",\"Statistic\":\"AVERAGE\",\"Unit\":null,\"Dimensions\":[{\"value\":\"i-02c69ba04c16ab966\",\"name\":\"InstanceId\"}],\"Period\":60,\"EvaluationPeriods\":1,\"ComparisonOperator\":\"GreaterThanOrEqualToThreshold\",\"Threshold\":90.0,\"TreatMissingData\":\"- TreatMissingData: breaching\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+        "Timestamp": "2019-10-02T23:17:42.040Z",
+        "SignatureVersion": "1",
+        "Signature": "EeNYK3HSkH722pNhOHNXEJ0Ug7b+ImikJ6a6v23MzL91tlsFWVUW80SNaw6dUl/++hVkIRkozRsb32mV4MHOPktrKvwZaiIdfapPGGNO6T3wdvDcLheLndxuqMRoDqhPy/zSm46WhO3aUK7JPk2MJlH5UBDHl95b7oezS2de7R/Kj7+dF3llAUFcKS+XNvTgIxPFfS3LdRU/tPG4TPusN7gmWDnKCeR4wE0ciO6J8TNHaGOy8gl9oggS1CNcVdrq0P/ZWJ7H2HBFEpN1iQbJpQF+Zcn/Q4EmFAILPYRQPvVdTSOuP3M4a+22wgnhJs3Ci0RtdFZqpS9brkvPPbSB/g==",
+        "SigningCertUrl": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+        "UnsubscribeUrl": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:12345678:cloudwedge-ingest:d8e14d21-0d54-45a4-8188-d00c8d8b5367",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

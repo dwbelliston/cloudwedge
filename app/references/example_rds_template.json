@@ -1,0 +1,35 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Stack for all rds instances that have owner cloudwedge. This stack is created by a hub account and his updated dynamically on tag updates.",
+  "Resources": {
+    "2a57bca7151f4e5fa02d05334b15cfa8CloudWedgeRDSCPUUtilization": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": "cloudwedge-rds-cloudwedge-medium-database-1-instance-1-cpu",
+        "AlarmDescription": "Instance=database-1-instance-1 Metric=CPUUtilization AlertLevel=medium Type=RDS AlertOwner=cloudwedge",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/RDS",
+        "Statistic": "Average",
+        "Period": 60,
+        "TreatMissingData": "breaching",
+        "EvaluationPeriods": 15,
+        "Threshold": 90,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": [
+          {
+            "Name": "DBInstanceIdentifier",
+            "Value": "database-1-instance-1"
+          }
+        ],
+        "AlarmActions": ["arn:aws:sns:us-west-2:ACCOUNTID:cloudwedge-ingest"]
+      }
+    },
+    "CloudWedgecloudwedgerdsDashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardBody": "{\"widgets\": [{\"type\": \"text\", \"x\": 0, \"y\": 0, \"width\": 24, \"height\": 2, \"properties\": {\"markdown\": \"# cloudwedge\\n###### CREATED BY CLOUDWEDGE\"}}, {\"type\": \"metric\", \"width\": 24, \"height\": 6, \"properties\": {\"metrics\": [[\"AWS/RDS\", \"CPUUtilization\", \"DBInstanceIdentifier\", \"database-1-instance-1\"]], \"view\": \"timeSeries\", \"stacked\": false, \"region\": \"us-west-2\", \"title\": \"CPUUtilization\", \"legend\": {\"position\": \"right\"}, \"yAxis\": {\"left\": {\"label\": \"\"}, \"right\": {\"label\": \"\"}}}, \"x\": 0, \"y\": 2}]}",
+        "DashboardName": "cloudwedge-cloudwedge-rds"
+      }
+    }
+  }
+}

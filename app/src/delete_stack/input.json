@@ -1,0 +1,7 @@
+{
+  "stack": {
+    "stackOwner": "cloudwedge",
+    "stackName": "cloudwedge-autogen-cloudwedge-dashboard-stack"
+  },
+  "targetAccountId": "ACCOUNTID"
+}

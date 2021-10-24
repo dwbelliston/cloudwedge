@@ -1,0 +1,11 @@
+{
+  "stackName": "cloudwedge-cloudwedge-alarms-stack",
+  "s3TemplateKey": "templates/cloudwedge-cloudwedge-alarms-stack/1596664387/template.json",
+  "stackType": "alarms",
+  "stackOwner": "cloudwedge",
+  "deploy": {
+    "inProgress": true,
+    "stackName": "cloudwedge-cloudwedge-alarms-stack",
+    "waitAttempts": 0
+  }
+}

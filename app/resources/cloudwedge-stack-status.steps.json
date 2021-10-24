@@ -1,0 +1,67 @@
+{
+  "Comment": "CloudWedge Builder Stack Status",
+  "StartAt": "ChangeInProgress",
+  "States": {
+    "ChangeInProgress": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.stackStatus.inProgress",
+              "BooleanEquals": true
+            },
+            {
+              "Variable": "$.stackStatus.waitAttempts",
+              "NumericLessThanEquals": 4
+            }
+          ],
+          "Next": "Wait"
+        },
+        {
+          "And": [
+            {
+              "Variable": "$.stackStatus.inProgress",
+              "BooleanEquals": false
+            },
+            {
+              "Variable": "$.stackStatus.hasError",
+              "BooleanEquals": true
+            }
+          ],
+          "Next": "Failed"
+        },
+        {
+          "Variable": "$.stackStatus.inProgress",
+          "BooleanEquals": false,
+          "Next": "Completed"
+        }
+      ],
+      "Default": "Failed"
+    },
+    "Wait": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "CheckStatus"
+    },
+    "CheckStatus": {
+      "Type": "Task",
+      "Resource": "${CheckStatusFunctionArn}",
+      "ResultPath": "$.stackStatus",
+      "Next": "ChangeInProgress",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "Failed"
+        }
+      ]
+    },
+    "Completed": {
+      "Type": "Succeed"
+    },
+    "Failed": {
+      "Type": "Fail",
+      "Cause": "CloudWedge extra cloudy"
+    }
+  }
+}

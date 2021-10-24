@@ -1,0 +1,180 @@
+image: lambci/lambda:build-python3.8
+
+stages:
+  - lint
+  - deploy:publishing
+  - build:app
+  - publish
+
+variables:
+  SAM_CLI_TELEMETRY: 0
+  # Regions must be comma separated. Whitespace is optional
+  REGIONS: us-west-2, us-east-1, us-east-2
+  RED: '\033[01;31m'
+  GREEN: '\033[01;32m'
+  YELLOW: '\033[01;33m'
+  BLUE: '\033[01;34m'
+  PURPLE: '\033[01;35m'
+  CYAN: '\033[01;36m'
+  NOCOLOR: '\033[0m'
+
+.set_env_variables: &set_env_variables
+# If master branch, then env is prd, else its dev
+- export ENVIRONMENT=$([ "$CI_COMMIT_REF_NAME" = "master" ] && echo "prd" || echo "dev")
+# Get the list of regions
+- temp="$(echo $REGIONS | tr -d '[:space:]')";
+  IFS=","; read -ra REGION_LIST <<< "$temp"; unset IFS
+# What is this bash wizardry? It’s basically the equivalent of this in python regions.replace(' ','').split(',').
+# In the command above it (where temp is set), it strips all whitespace.
+# Then this line sets , as the split character, then the read command splits by that character and saves a list called REGION_LIST.
+# Then we unset IFS because bad things happen when it’s different (that’s actually why I couldn’t do all of it in one line,
+# having IFS set to the non-default was messing with stripping the whitespace).
+- echo "REGIONS - ${REGION_LIST[@]}"
+
+Lint Publishing Cfn:
+  stage: lint
+  allow_failure: false
+  rules:
+    - changes:
+        - publishing/*.{yaml,yml}
+  tags:
+    - docker
+    - sandbox
+    - shared-runner
+    - us-west-2
+  before_script:
+    # Load up variables
+    - *set_env_variables
+  script:
+    - pip install cfn-lint
+    # Find all yaml files
+    - FILES=($(find ./publishing -iname *.yaml -o -iname *.yml))
+    # Check each file
+    - for TEMPLATE in "${FILES[@]}"; do cfn-lint --info --regions $REGION_LIST --ignore-checks=W -t $TEMPLATE; done
+
+
+# Deploys an artifact bucket for each region
+# AND if in us-west-2, deploys the doc pages bucket for docs website
+Setup Publishing Infastructure:
+  stage: deploy:publishing
+  allow_failure: false
+  tags:
+    - docker
+    - sandbox
+    - shared-runner
+    - us-west-2
+  rules:
+    - changes:
+        - publishing/*.{yaml,yml}
+  variables:
+    STACK_NAME: cloudwedge-publishing-infra
+    TEMPLATE_FILE: ./publishing/publishing.yaml
+  before_script:
+    # Load up variables
+    - *set_env_variables
+  script:
+    # Deploy the publishing yaml
+    - >
+      for REGION in "${REGION_LIST[@]}"; do
+        echo -e "${CYAN}Deploying publishing infra to ${REGION}${NOCOLOR}";
+        aws cloudformation deploy \
+          --stack-name $STACK_NAME \
+          --region $REGION \
+          --template-file "$TEMPLATE_FILE" \
+          --no-fail-on-empty-changeset;
+      done
+
+Build Version:
+  stage: build:app
+  allow_failure: false
+  rules:
+    - when: always
+  tags:
+    - docker
+    - sandbox
+    - shared-runner
+    - us-west-2
+  artifacts:
+    untracked: true
+    expire_in: 15 mins
+  before_script:
+    # Check versions
+    - aws --version
+    - sam --version
+  script:
+    # Build the thing
+    - ./publishing/scripts/build.sh
+
+# Stage doesnt run, but is extended by the dev and prd deploy stages
+.publish:
+  stage: publish
+  tags:
+    - docker
+    - sandbox
+    - shared-runner
+    - us-west-2
+  dependencies:
+    - Build Version
+  variables:
+    ARTIFACT_BUCKET: cloudwedge-public-artifacts
+    # Putting it in public folder, since the bucket policy has open access to public
+    ARTIFACT_BUCKET_PREFIX: public/cloudwedge
+    CAPABILITIES: CAPABILITY_IAM
+    ACL: public-read
+  # Putting scripts in before_script to allow the extending stage to use the script
+  # block and continue to access the VERSION env variable
+  before_script:
+    # Load up variables
+    - *set_env_variables
+    # Check versions
+    - aws --version
+    - sam --version
+    # Get version from package.json
+    - VERSION=$(cat package.json | python -c "import sys, json; print(json.load(sys.stdin)['version'])") && echo $VERSION
+    # Deploy the publishing yaml
+    - >
+      for REGION in "${REGION_LIST[@]}"; do
+        echo -e "${CYAN}================ Publishing to $REGION ================${NOCOLOR}"
+        echo -e "${BLUE}Removing old version files (if they exist)...${NOCOLOR}"
+        aws s3 rm --recursive s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/ --region $REGION
+        echo -e "${BLUE}Publishing SAM package to S3 bucket...${NOCOLOR}"
+        sam package --s3-bucket ${ARTIFACT_BUCKET}-${REGION} --s3-prefix $ARTIFACT_BUCKET_PREFIX/$VERSION --output-template-file cloudwedge-$VERSION.yaml --region $REGION
+        echo -e "${BLUE}Setting ACLs on SAM packaged files...${NOCOLOR}"
+        objects=($(aws s3api list-objects-v2 --bucket ${ARTIFACT_BUCKET}-${REGION} --prefix $ARTIFACT_BUCKET_PREFIX/$VERSION --query 'Contents[].Key' --output text))
+        for obj in "${objects[@]}"; do echo "- Putting $ACL acl on $obj"; aws s3api put-object-acl --acl $ACL --bucket ${ARTIFACT_BUCKET}-${REGION} --key $obj --region $REGION; done
+        echo -e "${BLUE}Uploading template file...${NOCOLOR}"
+        aws s3 cp cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/ --region $REGION --acl $ACL
+        echo -e "${BLUE}Syncing media to public s3 bucket media folder...${NOCOLOR}"
+        aws s3 sync ./publishing/media s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/media/$ENV --acl public-read --delete
+      done
+
+Publish Dev:
+  stage: publish
+  extends: .publish
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != "master"'
+  variables:
+    ENV: dev
+  script:
+    - echo "Deployed dev"
+
+Publish Prd:
+  stage: publish
+  extends: .publish
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+  variables:
+    ENV: prd
+  script:
+    # On master, update the version to latest
+    - >
+      for REGION in "${REGION_LIST[@]}"; do
+        aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge.yaml --region $REGION --acl $ACL
+        aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-spoke.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge-spoke.yaml --region $REGION --acl $ACL
+      done
+    - echo "Deployed prd"
+    # Publish to aws serverless application repo
+    # - sam publish --template cloudwedge-$VERSION.yaml --region us-west-2
+    # ^ publish command has this error
+    # Error: User: arn:aws:sts::ACCOUNTID:assumed-role/gitlab-shared-runner-iam-role/i-0ef68ecc0a71d2ad6 is not authorized to perform: serverlessrepo:CreateApplication on resource: arn:aws:serverlessrepo:us-west-2:ACCOUNTID:applications/*
+    # Please follow the instructions in https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-publishing-applications.html

@@ -1,0 +1,601 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your
+  ability to get up and running with native AWS monitoring services.
+
+Metadata:
+  # AWS::ServerlessRepo::Application:
+  #   Name: cloudwedge-monitoring
+  #   Description: >
+  #     CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your
+  #     ability to get up and running with native AWS monitoring services.
+  #   Author: 1strategy
+  #   SpdxLicenseId: MIT
+  #   LicenseUrl: ../LICENSE.txt
+  #   ReadmeUrl: ../README.md
+  #   Labels: ["cloudwatch", "monitoring", "mangement", "cost"]
+  #   HomePageUrl: https://gitlab.com/1strategy/internal/cloudwedge
+  #   SemanticVersion: x.x.x
+  #   SourceCodeUrl: https://gitlab.com/1strategy/internal/cloudwedge
+
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Spoke Account Setup"
+        Parameters:
+          - SpokeAccountIds
+          # - SpokeAccountRegions
+      - Label:
+          default: "Optional Features"
+        Parameters:
+          - CloudWedgeIamRoleNamePrefix
+          - DebugLocalRoleArn
+      - Label:
+          default: "Internal Settings (Ignore)"
+        Parameters:
+          - CloudWedgeEnvironment
+          - CloudWedgeVersion
+    ParameterLabels:
+      CloudWedgeEnvironment:
+        default: "CloudWedge Environment"
+      CloudWedgeVersion:
+        default: "CloudWedge Version"
+      CloudWedgeIamRoleNamePrefix:
+        default: "CloudWedge iam role prefix"
+      SpokeAccountIds:
+        default: "Spoke Account Ids"
+      DebugLocalRoleArn:
+        default: "Debug local role arn"
+      # SpokeAccountRegions:
+      #   default: "Spoke Regions"
+
+Parameters:
+
+  CloudWedgeEnvironment:
+    Type: String
+    Description: CloudWedge running environment to target (prd or dev)
+    Default: prd
+
+  CloudWedgeVersion:
+    Type: String
+    Description: "Version reference if deploying specific version, else itll be latest. For example: 1.0.0"
+    Default: "latest"
+
+  CloudWedgeIamRoleNamePrefix:
+    Type: String
+    Description: Prefix to add to all the iam roles that are created (include the hyphen)
+    Default: ""
+
+  # TODO: Have some flags for different features
+  FeatureEnvNameDetect:
+    Type: String
+    Description: Auto detect alarm level from resource name (name-prd maps to Critical)
+    Default: False
+
+  SpokeAccountIds:
+    Type: CommaDelimitedList
+    Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+
+  DebugLocalRoleArn:
+    Type: String
+    Description: "If you want to assume the spoke worker role to debug from you local, add a role arn that you will have locally, and this will be added to the spoke role policy. For example: arn:aws:iam::ACCOUNTID:role/Your-Local-Role"
+
+  # SpokeAccountRegions:
+  #   Type: CommaDelimitedList
+  #   Default: "us-west-2,us-east-1,us-east-2"
+  #   Description: 'Comma-delimited list of the regions this stackset should be deployed to. For example: "us-west-2,us-east-1"'
+
+Conditions:
+  IsUseIamRoleNamePrefix: !Not
+    - !Equals
+      - !Ref CloudWedgeIamRoleNamePrefix
+      - ""
+Globals:
+  Function:
+    Runtime: python3.8
+    Timeout: 30
+    Environment:
+      Variables:
+        REGION: !Sub ${AWS::Region}
+        ENVIRONMENT: !Ref CloudWedgeEnvironment
+        SPOKE_WORKER_ROLE_NAME: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
+        - "cloudwedge-spoke-worker-role"
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # Bucket
+  # Private Assets Bucket for sharing private assets (e.g. stack templates)
+  # ---------------------------------------------------------------------------
+  PrivateAssetsS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 2
+            Id: expireAfter2Days
+            Status: Enabled
+      Tags:
+        - Key: app:name
+          Value: cloudwedge
+        - Key: app:env
+          Value: !Ref CloudWedgeEnvironment
+
+  PrivateAssetsS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PrivateAssetsS3Bucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:GetBucketLocation
+              - s3:GetObjectVersion
+              - s3:GetLifecycleConfiguration
+              - s3:PutObject
+              - s3:PutObjectAcl
+              - s3:PutLifecycleConfiguration
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
+              - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
+            Principal:
+                AWS: !Ref SpokeAccountIds
+
+  ##
+  ##
+  ## Builder Infrastructure
+  ##
+  ##
+
+  # ---------------------------------------------------------------------------
+  # LayerVersion
+  # Layer is added to all functions to provide supported service classes
+  # ---------------------------------------------------------------------------
+  CloudWedgeLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: Layer provides classes for all the services CloudWedge supports
+      ContentUri: ../.build/layer # This is produced by the build command script
+      CompatibleRuntimes:
+        - python3.8
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: python3.8
+
+  # ---------------------------------------------------------------------------
+  # Role
+  # Used by all the lambdas to do work, it will assume the worker role in the spoke account
+  # ---------------------------------------------------------------------------
+  CloudWedgeHubWorkerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-hub-worker-role"
+        - "cloudwedge-hub-worker-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: AllowAssumeToSpoke
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource: !Sub "arn:aws:iam::*:role/${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
+
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  GetResourcesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Get a list of resources for a the supported CloudWedge services (e.g. ec2, rds)
+      CodeUri: src/get_resources
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  CreateStacksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Create stacks for all the cloudwedge resources. Stacks are created for each
+        owner.
+      CodeUri: src/create_stacks
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+      Environment:
+        Variables:
+          PRIVATE_ASSETS_BUCKET: !Ref PrivateAssetsS3Bucket
+          # Public assets bucket created outside of app itself
+          PUBLIC_ASSETS_BUCKET: !Sub "cloudwedge-public-artifacts-${AWS::Region}"
+          ALARM_ACTION_TARGET_TOPIC_ARN: !Ref InternalActionTargetTopic
+          USER_TARGET_TOPIC_ARN: !Ref CloudWedgeAlertsTopic
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  DeployStackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Deploy the stack template using the s3 reference.
+      CodeUri: src/deploy_stack
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+      Environment:
+        Variables:
+          PRIVATE_ASSETS_BUCKET: !Ref PrivateAssetsS3Bucket
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  CheckStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Checks the status of the stack and returns current status
+      CodeUri: src/check_status
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  TriageStacksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Gets a list of stacks that should be deleted
+      CodeUri: src/triage_stacks
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by Builder state machine
+  # ---------------------------------------------------------------------------
+  DeleteStackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Deletes the stack using cloudformation api
+      CodeUri: src/delete_stack
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by custom resource
+  # ---------------------------------------------------------------------------
+  CleanupResourcesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Deletes the stacks that cloudwedge has created (alarms, dashboards) when the cloudwedge application
+        is deleted
+      CodeUri: src/cleanup_resources
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+      Handler: index.lambda_handler
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Used by custom resource
+  # ---------------------------------------------------------------------------
+  CleanupResourcesCustom:
+    Type: "Custom::CleanupResourcesCustom"
+    Properties:
+      ServiceToken: !GetAtt CleanupResourcesFunction.Arn
+
+  # ---------------------------------------------------------------------------
+  # StateMachine
+  # Run status check on the target stacks and wait till they hit stable a state
+  # ---------------------------------------------------------------------------
+  CloudWedgeBuilderStackStatusStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: resources/cloudwedge-stack-status.steps.json
+      DefinitionSubstitutions:
+        CheckStatusFunctionArn: !GetAtt CheckStatusFunction.Arn
+      Policies:
+        - Statement:
+            - Sid: AllowLambdaInvokes
+              Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt CheckStatusFunction.Arn
+
+  # ---------------------------------------------------------------------------
+  # StateMachine
+  # Receives events and builds stacks to alarm cloudwedge resources
+  # ---------------------------------------------------------------------------
+  CloudWedgeBuilderStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: resources/cloudwedge-builder.steps.json
+      DefinitionSubstitutions:
+        GetResourcesFunctionArn: !GetAtt GetResourcesFunction.Arn
+        CreateStacksFunctionArn: !GetAtt CreateStacksFunction.Arn
+        DeployStackFunctionArn: !GetAtt DeployStackFunction.Arn
+        CheckStatusFunctionArn: !GetAtt CheckStatusFunction.Arn
+        TriageStacksFunctionArn: !GetAtt TriageStacksFunction.Arn
+        DeleteStackFunctionArn: !GetAtt DeleteStackFunction.Arn
+        CloudWedgeBuilderStackStatusStateMachineArn: !Ref CloudWedgeBuilderStackStatusStateMachine
+      Policies:
+        - StepFunctionsExecutionPolicy:
+            StateMachineName: !GetAtt CloudWedgeBuilderStackStatusStateMachine.Name
+        - Statement:
+            - Sid: AllowLambdaInvokes
+              Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt GetResourcesFunction.Arn
+                - !GetAtt CreateStacksFunction.Arn
+                - !GetAtt DeployStackFunction.Arn
+                - !GetAtt CheckStatusFunction.Arn
+                - !GetAtt TriageStacksFunction.Arn
+                - !GetAtt DeleteStackFunction.Arn
+            - Sid: AllowSubWorkflowRead
+              Effect: Allow
+              Action:
+                - states:DescribeExecution
+                - states:StopExecution
+              Resource:
+                - "*"
+            - Sid: AllowSubWorkflowManagedRule
+              Effect: Allow
+              Action:
+                - events:PutTargets
+                - events:PutRule
+                - events:DescribeRule
+              Resource:
+                - !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"
+
+  ##
+  ##
+  ## Alerter Infrastructure
+  ##
+  ##
+
+  # ---------------------------------------------------------------------------
+  # Function
+  # Function receives all the alarms, runs triage, and starts step function
+  # ---------------------------------------------------------------------------
+  IngestAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: >
+        Ingest alarms alerts from alarm action topic sns, triages alert for
+        alert type and info, and then starts step function to get alert sent out
+      CodeUri: src/ingest_alert
+      Role: !GetAtt CloudWedgeHubWorkerRole.Arn
+      Handler: index.lambda_handler
+      Layers:
+        - !Ref CloudWedgeLambdaLayer
+      Policies:
+        # Allow function to start step function
+        - StepFunctionsExecutionPolicy:
+            StateMachineName: !GetAtt CloudWedgeAlerterStateMachine.Name
+      Environment:
+        Variables:
+          STEPFUNCTION_ARN: !Ref CloudWedgeAlerterStateMachine
+
+  # ---------------------------------------------------------------------------
+  # Topic
+  # This topic receives the alarm notifications
+  # ---------------------------------------------------------------------------
+  InternalActionTargetTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: ❌ CloudWedge users, this topic is used for internal use only. Do not subscribe here.
+      Subscription:
+        - Protocol: lambda
+          Endpoint: !GetAtt IngestAlertFunction.Arn
+
+  # ---------------------------------------------------------------------------
+  # Lambda::Permission
+  # Allows the topic to invoke the function subscribed to it
+  # ---------------------------------------------------------------------------
+  AlarmActionTopicInvokeLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref IngestAlertFunction
+      Principal: sns.amazonaws.com
+
+  # ---------------------------------------------------------------------------
+  # TopicPolicy
+  # Allow alarm events to publish to this topic
+  # ---------------------------------------------------------------------------
+  InternalActionTargetTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref InternalActionTargetTopic
+      PolicyDocument:
+        Id: InternalActionTargetTopicPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudwatchToPublish
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref InternalActionTargetTopic
+
+  # ---------------------------------------------------------------------------
+  # Topic
+  # This topic is for users to subscribe to
+  # ---------------------------------------------------------------------------
+  CloudWedgeAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: cloudwedge-alerts-topic
+      DisplayName: 🚨 CloudWedge Alert
+
+  # ---------------------------------------------------------------------------
+  # TopicPolicy
+  # Allow alarm events to publish to this topic
+  # ---------------------------------------------------------------------------
+  CloudWedgeAlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref CloudWedgeAlertsTopic
+      PolicyDocument:
+        Id: CloudWedgeAlertsTopicPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowTopicAccess
+            Effect: Allow
+            Principal:
+              # TODO: AWS: 'publish_alert_lambda_arn'
+              AWS: "*"
+            Action:
+              - sns:GetTopicAttributes
+              - sns:SetTopicAttributes
+              - sns:AddPermission
+              - sns:RemovePermission
+              - sns:DeleteTopic
+              - sns:Subscribe
+              - sns:ListSubscriptionsByTopic
+              - sns:Publish
+              - sns:Receive
+            Resource: !Ref InternalActionTargetTopic
+
+  # ---------------------------------------------------------------------------
+  # StateMachine
+  # Receives alert and publishes out to delivery channels
+  # ---------------------------------------------------------------------------
+  CloudWedgeAlerterStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: resources/cloudwedge-alerter.steps.json
+      DefinitionSubstitutions:
+        # PublishEventsFunctionArn: !GetAtt IngestAlertFunction.Arn
+        CloudWedgeAlertsTopicArn: !Ref CloudWedgeAlertsTopic
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref CheckStatusFunction
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt CloudWedgeAlertsTopic.TopicName
+
+
+  # ---------------------------------------------------------------------------
+  # Event bus policy
+  # Sets up event bus to allow events from spoke accounts
+  # ---------------------------------------------------------------------------
+  EventBusPolicyAllowSpokes:
+    Type: AWS::Events::EventBusPolicy
+    Properties:
+      # Action: "events:PutEvents"
+      # Condition:
+      #   Condition
+      # EventBusName: String
+      StatementId: "CloudWedgeEventBusPolicyToAllowSpokes"
+      Statement:
+          Effect: "Allow"
+          Principal:
+              AWS: !Ref SpokeAccountIds
+              # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
+          Action:
+              - "events:PutEvents"
+          Resource: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
+          # Condition:
+          #     StringEquals:
+          #         "aws:PrincipalOrgID": "o-1234567890"
+
+
+
+  # ---------------------------------------------------------------------------
+  # SpokeStackSet
+  # Sets up the spokes on a stack set to send out to mutli-account/region
+  # ---------------------------------------------------------------------------
+  CloudWedgeSpokeStackSet:
+    Type: AWS::CloudFormation::StackSet
+    Properties:
+      StackSetName: cloudwedge-spoke-stackset
+      Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
+      # AutoDeployment:
+      #   Enabled: true
+      #   RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      Capabilities:
+        - CAPABILITY_IAM
+        - CAPABILITY_NAMED_IAM
+      OperationPreferences:
+        FailureToleranceCount: 0
+        MaxConcurrentCount: 1
+        RegionOrder:
+          - !Ref AWS::Region
+      PermissionModel: SELF_MANAGED
+      StackInstancesGroup:
+        - DeploymentTargets:
+            # OrganizationalUnitIds: !Ref OrganizationalUnits
+            Accounts: !Ref SpokeAccountIds
+          Regions:
+            - !Ref AWS::Region
+      Parameters:
+        # Used for parameter overrides, if necessary
+        - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
+          ParameterValue: !Ref CloudWedgeBuilderStateMachine
+        - ParameterKey: CloudWedgeEnvironment
+          ParameterValue: !Ref CloudWedgeEnvironment
+        - ParameterKey: HubAccountId
+          ParameterValue: !Ref AWS::AccountId
+        - ParameterKey: HubAccountWorkerRoleArn
+          ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
+        - ParameterKey: CloudWedgeIamRoleNamePrefix
+          ParameterValue: !Ref CloudWedgeIamRoleNamePrefix
+        - ParameterKey: HubPrivateAssetsS3Bucket
+          ParameterValue: !Ref PrivateAssetsS3Bucket
+        - ParameterKey: HubDebugLocalRoleArn
+          ParameterValue: !Ref DebugLocalRoleArn
+      TemplateURL: !Sub "https://cloudwedge-public-artifacts-${AWS::Region}.s3-${AWS::Region}.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
