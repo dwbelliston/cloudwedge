@@ -13,9 +13,8 @@ env:
   TARGET_ENV: dev
 
 jobs:
-  build:
-    environment: dev
   runit:
+    environment: dev
     runs-on: ubuntu-latest
 
     steps:
