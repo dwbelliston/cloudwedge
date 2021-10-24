@@ -9,108 +9,108 @@ Conditions:
 
 Resources:
 
-  CloudWedgePublicArtifactsBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      # AccelerateConfiguration:
-      #   AccelerateConfiguration
-      # AccessControl: String
-      # AnalyticsConfigurations:
-      #   - AnalyticsConfiguration
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      BucketName: !Sub "cloudwedge-public-artifacts-${AWS::Region}"
-      # CorsConfiguration:
-      #   CorsConfiguration
-      # InventoryConfigurations:
-      #   - InventoryConfiguration
-      LifecycleConfiguration:
-        Rules:
-          - Id: AbortIncompleteMultipartUploadAfter1Day
-            Status: Enabled
-            AbortIncompleteMultipartUpload:
-              DaysAfterInitiation: 1
-          - Id: TransitionWithAge
-            Status: Enabled
-            Transitions:
-              - StorageClass: STANDARD_IA
-                TransitionInDays: 30
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: FALSE
-        BlockPublicPolicy: FALSE
-        IgnorePublicAcls: FALSE
-        RestrictPublicBuckets: FALSE
-      Tags:
-        - Key: app:name
-          Value: cloudwedge
-      WebsiteConfiguration:
-        IndexDocument: index.html
+  # CloudWedgePublicArtifactsBucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     # AccelerateConfiguration:
+  #     #   AccelerateConfiguration
+  #     # AccessControl: String
+  #     # AnalyticsConfigurations:
+  #     #   - AnalyticsConfiguration
+  #     BucketEncryption:
+  #       ServerSideEncryptionConfiguration:
+  #         - ServerSideEncryptionByDefault:
+  #             SSEAlgorithm: AES256
+  #     BucketName: !Sub "cloudwedge-public-artifacts-${AWS::Region}"
+  #     # CorsConfiguration:
+  #     #   CorsConfiguration
+  #     # InventoryConfigurations:
+  #     #   - InventoryConfiguration
+  #     LifecycleConfiguration:
+  #       Rules:
+  #         - Id: AbortIncompleteMultipartUploadAfter1Day
+  #           Status: Enabled
+  #           AbortIncompleteMultipartUpload:
+  #             DaysAfterInitiation: 1
+  #         - Id: TransitionWithAge
+  #           Status: Enabled
+  #           Transitions:
+  #             - StorageClass: STANDARD_IA
+  #               TransitionInDays: 30
+  #     PublicAccessBlockConfiguration:
+  #       BlockPublicAcls: FALSE
+  #       BlockPublicPolicy: FALSE
+  #       IgnorePublicAcls: FALSE
+  #       RestrictPublicBuckets: FALSE
+  #     Tags:
+  #       - Key: app:name
+  #         Value: cloudwedge
+  #     WebsiteConfiguration:
+  #       IndexDocument: index.html
 
-  CloudWedgePublicArtifactsBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref CloudWedgePublicArtifactsBucket
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AllowPublic
-            Effect: Allow
-            Principal: "*"
-            Action: s3:GetObject
-            Resource:
-              - !Sub arn:aws:s3:::${CloudWedgePublicArtifactsBucket}/public/*
+  # CloudWedgePublicArtifactsBucketPolicy:
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     Bucket: !Ref CloudWedgePublicArtifactsBucket
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Sid: AllowPublic
+  #           Effect: Allow
+  #           Principal: "*"
+  #           Action: s3:GetObject
+  #           Resource:
+  #             - !Sub arn:aws:s3:::${CloudWedgePublicArtifactsBucket}/public/*
 
-  CloudWedgeDocsSandboxBucket:
-    Condition: IsUsWest2Region
-    Type: AWS::S3::Bucket
-    Properties:
-      # AccelerateConfiguration:
-      #   AccelerateConfiguration
-      # AccessControl: String
-      # AnalyticsConfigurations:
-      #   - AnalyticsConfiguration
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      BucketName: cloudwedge.1strategy-sandbox.com
-      # CorsConfiguration:
-      #   CorsConfiguration
-      # InventoryConfigurations:
-      #   - InventoryConfiguration
-      LifecycleConfiguration:
-        Rules:
-          - Id: AbortIncompleteMultipartUploadAfter1Day
-            Status: Enabled
-            AbortIncompleteMultipartUpload:
-              DaysAfterInitiation: 1
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: FALSE
-        BlockPublicPolicy: FALSE
-        IgnorePublicAcls: FALSE
-        RestrictPublicBuckets: FALSE
-      Tags:
-        - Key: app:name
-          Value: cloudwedge
-      WebsiteConfiguration:
-        IndexDocument: index.html
+  # CloudWedgeDocsSandboxBucket:
+  #   Condition: IsUsWest2Region
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     # AccelerateConfiguration:
+  #     #   AccelerateConfiguration
+  #     # AccessControl: String
+  #     # AnalyticsConfigurations:
+  #     #   - AnalyticsConfiguration
+  #     BucketEncryption:
+  #       ServerSideEncryptionConfiguration:
+  #         - ServerSideEncryptionByDefault:
+  #             SSEAlgorithm: AES256
+  #     BucketName: cloudwedge.1strategy-sandbox.com
+  #     # CorsConfiguration:
+  #     #   CorsConfiguration
+  #     # InventoryConfigurations:
+  #     #   - InventoryConfiguration
+  #     LifecycleConfiguration:
+  #       Rules:
+  #         - Id: AbortIncompleteMultipartUploadAfter1Day
+  #           Status: Enabled
+  #           AbortIncompleteMultipartUpload:
+  #             DaysAfterInitiation: 1
+  #     PublicAccessBlockConfiguration:
+  #       BlockPublicAcls: FALSE
+  #       BlockPublicPolicy: FALSE
+  #       IgnorePublicAcls: FALSE
+  #       RestrictPublicBuckets: FALSE
+  #     Tags:
+  #       - Key: app:name
+  #         Value: cloudwedge
+  #     WebsiteConfiguration:
+  #       IndexDocument: index.html
 
-  CloudWedgeDocsSandboxBucketPolicy:
-    Condition: IsUsWest2Region
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref CloudWedgeDocsSandboxBucket
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AllowPublic
-            Effect: Allow
-            Principal: "*"
-            Action: s3:GetObject
-            Resource:
-              - !Sub arn:aws:s3:::${CloudWedgeDocsSandboxBucket}/*
+  # CloudWedgeDocsSandboxBucketPolicy:
+  #   Condition: IsUsWest2Region
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     Bucket: !Ref CloudWedgeDocsSandboxBucket
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Sid: AllowPublic
+  #           Effect: Allow
+  #           Principal: "*"
+  #           Action: s3:GetObject
+  #           Resource:
+  #             - !Sub arn:aws:s3:::${CloudWedgeDocsSandboxBucket}/*
 
   CloudWedgeDocsBucket:
     Condition: IsUsWest2Region
@@ -125,7 +125,7 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      BucketName: cloudwedge.1strategy.com
+      BucketName: dev.cloudwedge.io
       # CorsConfiguration:
       #   CorsConfiguration
       # InventoryConfigurations:
@@ -164,9 +164,9 @@ Resources:
 
 
 Outputs:
-  CloudWedgePublicArtifactsBucket:
-    Description: CloudWedge public artifacts bucket
-    Value: !Ref CloudWedgePublicArtifactsBucket
+  # CloudWedgePublicArtifactsBucket:
+  #   Description: CloudWedge public artifacts bucket
+  #   Value: !Ref CloudWedgePublicArtifactsBucket
 
   CloudWedgeDocsBucket:
     Condition: IsUsWest2Region
