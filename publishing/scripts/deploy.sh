@@ -7,5 +7,7 @@ ARTIFACT_BUCKET_PREFIX="local"
 STACK_NAME="cloudwedge"
 CAPABILITIES="CAPABILITY_IAM"
 
+pwd
+ls
 
-sam deploy --stack-name $STACK_NAME --no-confirm-changeset --s3-bucket $ARTIFACT_BUCKET --s3-prefix $ARTIFACT_BUCKET_PREFIX --capabilities $CAPABILITIES --force-upload
+sam deploy -t "./publishing/publishing.yaml" --stack-name $STACK_NAME --no-confirm-changeset --s3-bucket $ARTIFACT_BUCKET --s3-prefix $ARTIFACT_BUCKET_PREFIX --capabilities $CAPABILITIES --force-upload
