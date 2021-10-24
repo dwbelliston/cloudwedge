@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ARTIFACT_BUCKET="cloudwedge.1strategy.com"
+ARTIFACT_BUCKET="dev.cloudwedge.io"
 # ARTIFACT_BUCKET="cloudwedge.1strategy-sandbox.com"
 DOCS_SITE_FOLDER="site"
 
