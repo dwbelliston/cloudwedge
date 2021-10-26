@@ -35,3 +35,7 @@ jobs:
       - name: Deploy West
         run: |
           npm run deploy "us-west-2"
+
+      - name: Deploy docs
+        run: |
+          npm run docs:publish
