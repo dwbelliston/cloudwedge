@@ -7,7 +7,7 @@ icon: home
 
 [CloudWedge](https://cloudwedge.io/) is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.
 
-![](static/wedge-hero.png)
+![](static/wedge-banner.png)
 
 ## Why use CloudWedge
 
