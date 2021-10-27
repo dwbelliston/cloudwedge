@@ -15,5 +15,13 @@ ls
 pwd
 ls node_modules
 
+echo "---"
+
+which retype
+echo "---"
+
+npx retype build
+
+echo "---"
 aws s3 sync docs s3://$WEBROOT_BUCKET --delete --sse aws:kms
 # aws s3 sync $WEBROOT_LOCALFOLDER s3://$WEBROOT_BUCKET --delete --sse aws:kms
