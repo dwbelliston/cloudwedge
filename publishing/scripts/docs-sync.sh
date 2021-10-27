@@ -11,5 +11,9 @@ WEBROOT_LOCALFOLDER="docsbuilt"
 
 echo -e "${CYAN}Syncing docs to ${WEBROOT_BUCKET}${NOCOLOR}";
 
-npx retype build
-aws s3 sync $WEBROOT_LOCALFOLDER s3://$WEBROOT_BUCKET --delete --sse aws:kms
+ls
+pwd
+ls node_modules
+
+aws s3 sync docs s3://$WEBROOT_BUCKET --delete --sse aws:kms
+# aws s3 sync $WEBROOT_LOCALFOLDER s3://$WEBROOT_BUCKET --delete --sse aws:kms
