@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="turbo-cache-control" content="no-cache">
+
+    <!-- Primary Meta Tags -->
+    <title>Welcome to CloudWedge | CloudWedge - AWS Native Monitoring Framework</title>
+    <meta name="title" content="Welcome to CloudWedge | CloudWedge - AWS Native Monitoring Framework">
+    <meta name="description" content="CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloudwedge.io/">
+    <meta property="og:title" content="Welcome to CloudWedge | CloudWedge - AWS Native Monitoring Framework">
+    <meta property="og:description" content="CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.">
+    <meta property="og:image" content="https://cloudwedge.io/static/wedge-banner.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://cloudwedge.io/">
+    <meta property="twitter:title" content="Welcome to CloudWedge | CloudWedge - AWS Native Monitoring Framework">
+    <meta property="twitter:description" content="CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.">
+    <meta property="twitter:image" content="https://cloudwedge.io/static/wedge-banner.png">
+    
+    <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
+
+    <link href="/static/favicon.png" rel="icon" />
+    <link href="/resources/css/retype.css?v=1.10.688671018816" rel="stylesheet" data-turbo-track="reload" />
+
+    <script type="text/javascript" src="/resources/js/config.js?v=1.10.688671018816" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/retype.js?v=1.10" defer data-turbo-track="reload"></script>
+</head>
+    <body>
+        <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
+    <div class="absolute bottom-0 left-0 bg-gray-100 dark:bg-dark-800" style="top: 5rem; right: 50%"></div>
+
+    <header id="docs-site-header" class="sticky top-0 z-30 flex w-full h-16 bg-white border-b border-gray-200 md:h-20 dark:bg-dark-850 dark:border-dark-650">
+    <div class="container relative flex items-center justify-between flex-grow pr-6 md:justify-start">
+        <!-- Mobile menu button skeleton -->
+        <button v-cloak class="skeleton docs-mobile-menu-button flex items-center justify-center flex-shrink-0 overflow-hidden dark:text-white focus:outline-none rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px flex-shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+        <div v-cloak id="docs-sidebar-toggle"></div>
+
+        <!-- Logo -->
+        <div class="flex items-center justify-between h-full py-2 md:w-75">
+            <div class="flex items-center px-2 md:px-6">
+                <a id="docs-site-logo" href="/" class="flex items-center leading-snug text-2xl">
+                    <span class="flex-grow-0 flex-shrink-0 overflow-hidden">
+                        <img class="max-h-10 dark:hidden md:inline-block" src="/static/light-logo-short.svg">
+                        <img class="max-h-10 hidden dark:inline-block" src="/static/dark-logo-short.svg">
+                    </span>
+                </a><span class="hidden px-2 py-1 ml-4 text-sm font-semibold leading-none text-root-logo-label-text bg-root-logo-label-bg rounded-sm md:inline-block">v1.0</span>
+            </div>
+
+            <span class="hidden h-8 border-r md:inline-block dark:border-dark-650"></span>
+        </div>
+
+        <div class="flex justify-between md:flex-grow">
+            <!-- Top Nav -->
+            <nav class="hidden md:flex">
+    <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+        <li class="md:mr-6">
+            <a class="block py-2 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="/">Home</a>
+        </li>
+        <li class="md:mr-6">
+            <a class="block py-2 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="https://github.com/1strategy/cloudwedge" target="_blank">GitHub</a>
+        </li>
+        <li class="md:mr-6">
+            <a class="block py-2 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="https://github.com/cloudwedge/cloudwedge/discussions" target="_blank">Discussions</a>
+        </li>
+        <li class="md:mr-6">
+            <a class="block py-2 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="https://github.com/cloudwedge/cloudwedge/issues" target="_blank">Issues</a>
+        </li>
+    </ul>
+</nav>
+
+            <!-- Header Right Skeleton -->
+            <div v-cloak class="flex justify-end flex-grow skeleton">
+
+                <!-- Search input mock -->
+                <div class="relative hidden w-40 lg:block lg:max-w-sm lg:ml-auto">
+                    <div class="absolute flex items-center justify-center h-full pl-3 dark:text-dark-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon-base" width="16" height="16" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 1px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                    </div>
+
+                    <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
+                    style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search docs" />
+                </div>
+
+                <!-- Mobile search button mock -->
+                <div class="flex items-center justify-center w-10 h-10 lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 icon-base" width="20" height="20" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                </div>
+
+                <!-- Dark mode switch placehokder -->
+                <div class="w-10 h-10 lg:ml-2"></div>
+
+                <!-- History button mock -->
+                <div class="flex items-center justify-center w-10 h-10" style="margin-right: -0.625rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 icon-base" width="22" height="22" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><g ><path d="M12.01 6.01c-.55 0-1 .45-1 1V12a1 1 0 00.4.8l3 2.22a.985.985 0 001.39-.2.996.996 0 00-.21-1.4l-2.6-1.92V7.01c.02-.55-.43-1-.98-1z"></path><path d="M12.01 1.91c-5.33 0-9.69 4.16-10.05 9.4l-.29-.26a.997.997 0 10-1.34 1.48l1.97 1.79c.19.17.43.26.67.26s.48-.09.67-.26l1.97-1.79a.997.997 0 10-1.34-1.48l-.31.28c.34-4.14 3.82-7.41 8.05-7.41 4.46 0 8.08 3.63 8.08 8.09s-3.63 8.08-8.08 8.08c-2.18 0-4.22-.85-5.75-2.4a.996.996 0 10-1.42 1.4 10.02 10.02 0 007.17 2.99c5.56 0 10.08-4.52 10.08-10.08.01-5.56-4.52-10.09-10.08-10.09z"></path></g></g></svg>
+                </div>
+            </div>
+
+            <div v-cloak class="flex items-center justify-end flex-grow">
+                <div id="docs-mobile-search-button"></div>
+                <doc-search-desktop></doc-search-desktop>
+
+                <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                <doc-history></doc-history>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container relative flex bg-white">
+        <!-- Sidebar Skeleton -->
+<div v-cloak class="fixed flex flex-col flex-shrink-0 duration-300 ease-in-out bg-gray-100 border-gray-200 sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton dark:bg-dark-800 dark:border-dark-650">
+
+    <!-- Render this div, if config.showSidebarFilter is `true` -->
+    <div class="flex items-center h-16 px-6">
+        <input class="w-full h-8 px-3 py-2 transition-colors duration-200 ease-linear bg-white border border-gray-200 rounded shadow-none text-sm focus:outline-none focus:border-gray-600 dark:bg-dark-600 dark:border-dark-600" type="text" placeholder="Filter" />
+    </div>
+
+    <div class="pl-6 mb-4 mt-1">
+        <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+    </div>
+
+    <div class="flex-shrink-0 mt-auto bg-transparent dark:border-dark-650">
+        <a
+    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in"
+    target="_blank"
+    href="https://retype.com/"
+    rel="noopener"
+>
+    <span class="text-xs whitespace-nowrap">Powered by</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+</a>
+
+    </div>
+</div>
+
+<!-- Sidebar component -->
+<doc-sidebar v-cloak>
+    <template #sidebar-footer>
+        <div
+            class="flex-shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-dark-650"
+        >
+
+            <div class="py-3 px-6 md:hidden border-b dark:border-dark-650">
+                <nav>
+                    <ul class="flex flex-wrap justify-center items-center">
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="/README.md">Home</a>
+                        </li>
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="https://github.com/1strategy/cloudwedge">GitHub</a>
+                        </li>
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="https://github.com/cloudwedge/cloudwedge/discussions">Discussions</a>
+                        </li>
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="https://github.com/cloudwedge/cloudwedge/issues">Issues</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <a
+    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in"
+    target="_blank"
+    href="https://retype.com/"
+    rel="noopener"
+>
+    <span class="text-xs whitespace-nowrap">Powered by</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+</a>
+
+        </div>
+    </template>
+</doc-sidebar>
+
+
+        <div class="flex-grow min-w-0 dark:bg-dark-850">
+            <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+            <div class="flex">
+    <div class="flex-grow min-w-0 px-6 md:px-16">
+        <main class="relative pt-6 pb-16">
+            <div class="docs-markdown" id="docs-content">
+                <!-- Rendered if sidebar right is enabled -->
+                <div id="docs-sidebar-right-toggle"></div>
+               
+                <!-- Page content  -->
+<doc-anchor-target id="welcome-to-cloudwedge" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#welcome-to-cloudwedge">#</doc-anchor-trigger>
+        <span>Welcome to CloudWedge</span>
+    </h1>
+</doc-anchor-target>
+<p><a href="https://cloudwedge.io/">CloudWedge</a> is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.</p>
+<p><figure class="content-center">
+    <img src="static/wedge-banner.png" alt="" />
+    <figcaption class="caption"></figcaption>
+</figure>
+</p>
+<doc-anchor-target id="why-use-cloudwedge">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-use-cloudwedge">#</doc-anchor-trigger>
+        <span>Why use CloudWedge</span>
+    </h2>
+</doc-anchor-target>
+<p>CloudWedge is perfect for when you want to use the native AWS monitoring services, but you dont want to fuss with the all the implementation details. CloudWedge will provide the monitoring alarms and the dashboards you would have built by hand (or in CloudFormation) and give you back that time to focus on what really matters.</p>
+<p>Essentially, CloudWedge is doing the &quot;undifferentiated heavy lifting&quot; of setting up CloudWatch and and wiring it into an alerting pipeline using SNS.</p>
+<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
+    <span class="docs-emoji mr-2">&#x2601;&#xFE0F;</span>
+    <span>Native AWS</span>
+</span> CloudWedge is using 100% AWS native services from the cradle to the grave.</p>
+<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
+    <span class="docs-emoji mr-2">&#x1F510;</span>
+    <span>100% Privacy</span>
+</span> Your data never leaves your account. No 3rd party to ship data to, its all contained within the walls of your own home. Look at the source code yourself, we are not hiding anything. You have total control.</p>
+<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
+    <span class="docs-emoji mr-2">&#x1F7E2;</span>
+    <span>Operationally Easy</span>
+</span> You only have to learn the custom CloudWedge &quot;tags&quot; and add them to your resources.</p>
+<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
+    <span class="docs-emoji mr-2">&#x1F64B;</span>
+    <span>Opt-In Only</span>
+</span> You choose what to monitoring and how.</p>
+<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
+    <span class="docs-emoji mr-2">&#x1F4A5;</span>
+    <span>Event Based</span>
+</span> You change your environment, CloudWedge will update itself. Its not as sophisticated as true AI, but you might start to think so.</p>
+<div class="flex mb-6">
+    <div class="flex-shrink-0 w-1 rounded-tl rounded-bl bg-yellow-500"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-yellow-500" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M22.48 15.59L14.01 1.45A2.968 2.968 0 0012.16.09c-.78-.19-1.58-.07-2.27.35-.41.25-.76.6-1.01 1.01v.01L.4 15.6c-.83 1.43-.33 3.27 1.1 4.1.45.26.95.4 1.48.4h16.95c.8-.01 1.55-.33 2.11-.9.56-.57.87-1.33.86-2.13a3.04 3.04 0 00-.42-1.48zm-1.87 2.21c-.19.19-.44.3-.69.3H2.99c-.17 0-.34-.05-.49-.13a.992.992 0 01-.37-1.35L10.6 2.48c.08-.14.2-.25.34-.33a.992.992 0 011.37.33l8.46 14.13c.09.15.13.32.13.49 0 .26-.1.51-.29.7z"></path>
+                    <path d="M11.45 12.1c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .56.45 1 1 1zM11.46 14.1c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3">
+            <h5>CloudWedge is not</h5>
+<ul>
+<li>A competitor to more robust, but more expensive <span class="docs-emoji">&#x1F4B2;</span><span class="docs-emoji">&#x1F4B2;</span><span class="docs-emoji">&#x1F4B2;</span>, Application Performance Monitoring tools like DataDog, New Relic, Dynatrace, App Dynamcis etc..</li>
+<li>A fully customizable enterprise suite of monitoring tools with beautiful dashboard visualizations and stand-alone app support for all of your devices.</li>
+<li>An infinitely scalable monitoring tool.</li>
+</ul>
+        </div>
+    </div>
+</div>
+<div class="flex mb-6">
+    <div class="flex-shrink-0 w-1 rounded-tl rounded-bl bg-green-500"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-green-500" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M21 9.09c-.55 0-1 .45-1 1v.92c0 4.96-4.04 8.99-9 8.99-4.97 0-9-4.04-9-9s4.04-9 9-9c1.27 0 2.5.26 3.66.78.51.22 1.1 0 1.32-.51.23-.5 0-1.1-.51-1.32C14.06.32 12.56 0 11.01 0H11C4.94 0 0 4.93 0 10.99 0 17.06 4.93 22 10.99 22H11c6.06 0 11-4.93 11-10.99v-.92c0-.56-.45-1-1-1z"></path>
+                    <path d="M8.71 9.31a.996.996 0 10-1.41 1.41l3 3c.19.19.44.29.71.29.27 0 .52-.11.71-.29l10-10.01a.996.996 0 10-1.41-1.41L11 11.6 8.71 9.31z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3">
+            <h5>CloudWedge is</h5>
+<ul>
+<li>Better than nothing.</li>
+<li>A tool to automate away the complexity of setting up CloudWatch Alarms and Dashboards and facilitate alert notifications when those CloudWatch Alarms are breached.</li>
+<li>An inexpensive, easy to deploy, set of native AWS tools/services to get you up and running with monitoring and alerting on AWS.</li>
+<li>Easy to use — Just add tags!</li>
+<li>Extensible.</li>
+<li>Multi-account/Multi-region. <em>(Coming soon)</em></li>
+</ul>
+        </div>
+    </div>
+</div>
+<doc-anchor-target id="how-cloudwedge-works">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-cloudwedge-works">#</doc-anchor-trigger>
+        <span>How CloudWedge works</span>
+    </h2>
+</doc-anchor-target>
+<p>Getting a little more technical, here is a breakdown of the interactions between you, AWS and CloudWedge:</p>
+<table class="comfortable">
+<thead>
+<tr>
+<th style="text-align: center;">Actor</th>
+<th>Activity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F469;&#x200D;&#x1F4BB;</span></td>
+<td>You tag a resource with a CloudWedge supported tag</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x2601;&#xFE0F;</span></td>
+<td>AWS captures user activity in AWS EventBridge</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F916;</span></td>
+<td>CloudWedge watches AWS EventBridge for any relevant events. In this case, it sees a CloudWedge tag was added so it decides it needs to work.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F916;</span></td>
+<td>CloudWedge starts an AWS StepFunction which orchestrates the CloudWedge activity</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F916;</span></td>
+<td>CloudWedge uses the AWS apis to get all the resources in your account that have opted-in to be monitoring be CloudWedge.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F916;</span></td>
+<td>CloudWedge iterates over those resources and builds a CloudFormation template which has all the AWS CloudWatch alarms and dashboards created for those resources.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F916;</span></td>
+<td>CloudWedge uses the AWS CloudFormation api to deploy the CloudFormation template, which does all the creation of the alarms and dashboards.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x2601;&#xFE0F;</span></td>
+<td>AWS sends you a bill</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="docs-emoji">&#x1F469;&#x200D;&#x1F4BB;</span></td>
+<td>You do more important things</td>
+</tr>
+</tbody>
+</table>
+<doc-anchor-target id="example-usage">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#example-usage">#</doc-anchor-trigger>
+        <span>Example Usage</span>
+    </h2>
+</doc-anchor-target>
+<p>You can get started monitoring with CloudWedge by using the following CloudWedge core tags. Just slap a tag called <span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-blue-600 bg-blue-100 h-6 px-2 text-xs rounded-md">
+    <span><svg xmlns="http://www.w3.org/2000/svg" class="mb-px inline-flex mr-2" width="18" height="18" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><path d="M7.75 6.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/><path fill-rule="evenodd" d="M2.5 1A1.5 1.5 0 001 2.5v8.44c0 .397.158.779.44 1.06l10.25 10.25a1.5 1.5 0 002.12 0l8.44-8.44a1.5 1.5 0 000-2.12L12 1.44A1.5 1.5 0 0010.94 1H2.5zm0 1.5h8.44l10.25 10.25-8.44 8.44L2.5 10.94V2.5z"/></g></svg></span>
+    <span>cloudwedge:active</span>
+</span> on a supported service and watch the alarms get created. These are the core configuration tags:</p>
+<doc-panels>
+   <doc-panel id="badge-variant-primary-icon-tag-iconalign-left-text-cloudwedge-active" collapsed>
+       <template #title><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-blue-600 bg-blue-100 h-6 px-2 text-xs rounded-md">
+    <span><svg xmlns="http://www.w3.org/2000/svg" class="mb-px inline-flex mr-2" width="18" height="18" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><path d="M7.75 6.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/><path fill-rule="evenodd" d="M2.5 1A1.5 1.5 0 001 2.5v8.44c0 .397.158.779.44 1.06l10.25 10.25a1.5 1.5 0 002.12 0l8.44-8.44a1.5 1.5 0 000-2.12L12 1.44A1.5 1.5 0 0010.94 1H2.5zm0 1.5h8.44l10.25 10.25-8.44 8.44L2.5 10.94V2.5z"/></g></svg></span>
+    <span>cloudwedge:active</span>
+</span></template>
+<doc-anchor-target id="tag-name">
+    <h5>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tag-name">#</doc-anchor-trigger>
+        <span>Tag Name</span>
+    </h5>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">cloudwedge:active</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="tag-details">
+    <h5>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tag-details">#</doc-anchor-trigger>
+        <span>Tag Details</span>
+    </h5>
+</doc-anchor-target>
+<table class="comfortable">
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Required</strong></td>
+<td style="text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" class="docs-icon" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><g><path d="M17.03 9.78a.75.75 0 00-1.06-1.06l-5.47 5.47-2.47-2.47a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l6-6z"/><path fill-rule="evenodd" d="M14.136 1.2a3.61 3.61 0 00-4.272 0L8.489 2.21a2.11 2.11 0 01-.929.384l-1.686.259a3.61 3.61 0 00-3.021 3.02L2.594 7.56a2.11 2.11 0 01-.384.929L1.2 9.864a3.61 3.61 0 000 4.272l1.01 1.375c.2.274.333.593.384.929l.259 1.686a3.61 3.61 0 003.02 3.021l1.687.259c.336.051.655.183.929.384l1.375 1.01a3.61 3.61 0 004.272 0l1.375-1.01a2.11 2.11 0 01.929-.384l1.686-.259a3.61 3.61 0 003.021-3.02l.259-1.687a2.11 2.11 0 01.384-.929l1.01-1.375a3.61 3.61 0 000-4.272l-1.01-1.375a2.11 2.11 0 01-.384-.929l-.259-1.686a3.61 3.61 0 00-3.02-3.021l-1.687-.259a2.11 2.11 0 01-.929-.384L14.136 1.2zm-3.384 1.209a2.11 2.11 0 012.496 0l1.376 1.01a3.61 3.61 0 001.589.658l1.686.258a2.11 2.11 0 011.765 1.766l.26 1.686a3.61 3.61 0 00.657 1.59l1.01 1.375a2.11 2.11 0 010 2.496l-1.01 1.376a3.61 3.61 0 00-.658 1.589l-.258 1.686a2.11 2.11 0 01-1.766 1.765l-1.686.26a3.61 3.61 0 00-1.59.657l-1.375 1.01a2.11 2.11 0 01-2.496 0l-1.376-1.01a3.61 3.61 0 00-1.589-.658l-1.686-.258a2.11 2.11 0 01-1.766-1.766l-.258-1.686a3.61 3.61 0 00-.658-1.59l-1.01-1.375a2.11 2.11 0 010-2.496l1.01-1.376a3.61 3.61 0 00.658-1.589l.258-1.686a2.11 2.11 0 011.766-1.766l1.686-.258a3.61 3.61 0 001.59-.658l1.375-1.01z"/></g></g></svg></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Description</strong></td>
+<td style="text-align: left;">This tag controls if the resource should be included as candidate for alarms. Without this tag the cloudwedge will not identify this resource as in scope.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Default</strong></td>
+<td style="text-align: left;">No default, its either on or off</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Values</strong></td>
+<td style="text-align: left;">Only the value &quot;true&quot; will mark the resource as in scope for alarms. Any other value will not considered.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Example</strong></td>
+<td style="text-align: left;"><code v-pre>true</code></td>
+</tr>
+</tbody>
+</table>
+   </doc-panel>
+   <doc-panel id="badge-variant-primary-icon-tag-iconalign-left-text-cloudwedge-owner" collapsed>
+       <template #title><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-blue-600 bg-blue-100 h-6 px-2 text-xs rounded-md">
+    <span><svg xmlns="http://www.w3.org/2000/svg" class="mb-px inline-flex mr-2" width="18" height="18" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><path d="M7.75 6.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/><path fill-rule="evenodd" d="M2.5 1A1.5 1.5 0 001 2.5v8.44c0 .397.158.779.44 1.06l10.25 10.25a1.5 1.5 0 002.12 0l8.44-8.44a1.5 1.5 0 000-2.12L12 1.44A1.5 1.5 0 0010.94 1H2.5zm0 1.5h8.44l10.25 10.25-8.44 8.44L2.5 10.94V2.5z"/></g></svg></span>
+    <span>cloudwedge:owner</span>
+</span></template>
+<doc-anchor-target id="tag-name-1">
+    <h5>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tag-name-1">#</doc-anchor-trigger>
+        <span>Tag Name</span>
+    </h5>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">cloudwedge:owner</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="tag-details-1">
+    <h5>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tag-details-1">#</doc-anchor-trigger>
+        <span>Tag Details</span>
+    </h5>
+</doc-anchor-target>
+<table class="comfortable">
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Required</strong></td>
+<td style="text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" class="docs-icon" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><g><path d="M9.036 7.976a.75.75 0 00-1.06 1.06L10.939 12l-2.963 2.963a.75.75 0 101.06 1.06L12 13.06l2.963 2.964a.75.75 0 001.061-1.06L13.061 12l2.963-2.964a.75.75 0 10-1.06-1.06L12 10.939 9.036 7.976z"/><path fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zM2.5 12a9.5 9.5 0 1119 0 9.5 9.5 0 01-19 0z"/></g></g></svg></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Description</strong></td>
+<td style="text-align: left;">Tag determines what owner the alerts will be marked with. You can use this owner to filter alerting methods to specifc owners. For example, you may want to receive a text just for systems you own.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Default</strong></td>
+<td style="text-align: left;"><code v-pre>cloudwedge</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Values</strong></td>
+<td style="text-align: left;">any string</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Example</strong></td>
+<td style="text-align: left;"><code v-pre>customers-microservice</code></td>
+</tr>
+</tbody>
+</table>
+   </doc-panel>
+   <doc-panel id="badge-variant-primary-icon-tag-iconalign-left-text-cloudwedge-level" collapsed>
+       <template #title><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-blue-600 bg-blue-100 h-6 px-2 text-xs rounded-md">
+    <span><svg xmlns="http://www.w3.org/2000/svg" class="mb-px inline-flex mr-2" width="18" height="18" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><path d="M7.75 6.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/><path fill-rule="evenodd" d="M2.5 1A1.5 1.5 0 001 2.5v8.44c0 .397.158.779.44 1.06l10.25 10.25a1.5 1.5 0 002.12 0l8.44-8.44a1.5 1.5 0 000-2.12L12 1.44A1.5 1.5 0 0010.94 1H2.5zm0 1.5h8.44l10.25 10.25-8.44 8.44L2.5 10.94V2.5z"/></g></svg></span>
+    <span>cloudwedge:level</span>
+</span></template>
+<doc-anchor-target id="tag-name-2">
+    <h5>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tag-name-2">#</doc-anchor-trigger>
+        <span>Tag Name</span>
+    </h5>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">cloudwedge:level</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="tag-details-2">
+    <h5>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tag-details-2">#</doc-anchor-trigger>
+        <span>Tag Details</span>
+    </h5>
+</doc-anchor-target>
+<table class="comfortable">
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Required</strong></td>
+<td style="text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" class="docs-icon" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><g><path d="M9.036 7.976a.75.75 0 00-1.06 1.06L10.939 12l-2.963 2.963a.75.75 0 101.06 1.06L12 13.06l2.963 2.964a.75.75 0 001.061-1.06L13.061 12l2.963-2.964a.75.75 0 10-1.06-1.06L12 10.939 9.036 7.976z"/><path fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zM2.5 12a9.5 9.5 0 1119 0 9.5 9.5 0 01-19 0z"/></g></g></svg></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Description</strong></td>
+<td style="text-align: left;">Tag determines what level the alerts will be marked as. You can use this level to filter alerting methods to specifc levels. For example, you may want to receive a text just for critical alerts.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Default</strong></td>
+<td style="text-align: left;"><code v-pre>medium</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Values</strong></td>
+<td style="text-align: left;"><code v-pre>critical</code> <code v-pre>high</code> <code v-pre>medium</code> <code v-pre>low</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Example</strong></td>
+<td style="text-align: left;"><code v-pre>critical</code></td>
+</tr>
+</tbody>
+</table>
+   </doc-panel>
+</doc-panels>
+<doc-anchor-target id="deployment">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#deployment">#</doc-anchor-trigger>
+        <span>Deployment</span>
+    </h2>
+</doc-anchor-target>
+<p>CloudWedge is packaged in a CloudFormation template. This makes is very easy to deploy. You just need to get a url reference to the pre-baked CloudFormation and then use the AWS CloudFormation console to deploy the stack into your account.</p>
+<doc-anchor-target id="getting-started">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#getting-started">#</doc-anchor-trigger>
+        <span>Getting Started</span>
+    </h2>
+</doc-anchor-target>
+<p>It&#x27;s always nice to have someone show you around a new place. Check out the <a href="guides/getting-started/">Getting Started</a> guide to get comfortable using CloudWedge.</p>
+<doc-anchor-target id="license">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#license">#</doc-anchor-trigger>
+        <span>License</span>
+    </h2>
+</doc-anchor-target>
+<p>This project is licensed under the terms of the MIT license.</p>
+<div class="flex mb-6">
+    <div class="flex-shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
+                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3">
+            <h5><span class="docs-emoji">&#x26A1;</span> Let us know what you think!</h5>
+<p>Send us some a message in the chat bubble below or join the discussion on github.</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+                <!-- Required only on API pages -->
+                <doc-toolbar-member-filter-no-results />
+            </div>
+
+            
+<nav class="flex mt-14">
+    <div class="w-1/2">
+    </div>
+
+    <div class="w-1/2">
+        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-all md:break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l rounded-r-lg transition-colors duration-150 relative hover:z-5" href="/guides/getting-started/">
+            <span>
+                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
+                <span class="block mt-1">Getting started</span>
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+        </a>
+    </div>
+</nav>
+
+
+        </main>
+
+        <div class="border-t dark:border-dark-650 pt-6 mb-8">
+            <footer class="flex flex-wrap items-center justify-between">
+    <div>
+        <ul class="flex flex-wrap items-center text-sm">
+    <li>
+        <a class="block mr-4 py-2 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="/about/">About</a>
+    </li>
+</ul>
+
+    </div>
+    <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>© Copyright 2021. <a href="https://1Strategy.com/">1Strategy.com</a> All rights reserved.</p>
+</div>
+</footer>
+
+        </div>
+    </div>
+    
+    <!-- Rendered if sidebar right is enabled -->
+    <!-- Sidebar right skeleton-->
+    <div v-cloak class="fixed top-0 bottom-0 right-0 transform translate-x-full bg-white border-gray-200 lg:sticky lg:border-l lg:flex-shrink-0 lg:pt-6 lg:transform-none lg:w-56 lg:z-0 md:w-72 sidebar-right skeleton dark:bg-dark-850 dark:border-dark-650">
+        <div class="pl-5">
+            <div class="w-32 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+            <div class="w-48 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+            <div class="w-40 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+        </div>
+    </div>
+    
+    <!-- User should be able to hide sidebar right -->
+    <doc-sidebar-right v-cloak></doc-sidebar-right>
+</div>
+
+        </div>
+    </div>
+
+    <doc-search-mobile></doc-search-mobile>
+    <doc-back-to-top></doc-back-to-top>
+</div>
+
+
+        <div id="docs-overlay-target"></div>
+
+        <script>window.__DOCS__ = { "title": "Welcome", icon: "file", hasPrism: false, hasMermaid: false, hasMath: false }</script>
+        <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="d1867e41-3197-49d9-91b0-9b8e32d92b07";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+    </body>
+</html>
