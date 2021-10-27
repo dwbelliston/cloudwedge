@@ -12,7 +12,7 @@
     "docs:local": "retype watch",
     "docs:build": "retype build",
     "docs:infra": "./publishing/scripts/docs-infra.sh",
-    "docs:publish": "npm run docs:build && ./publishing/scripts/docs.sh",
+    "docs:sync": "./publishing/scripts/docs-sync.sh",
     "local": "",
     "local:gitlabdowndeploy": "npm run app:build && ./publishing/scripts/when-gitlab-is-down-scripts.sh",
     "local:deployapp": "npm run app:build && ./publishing/scripts/deploy.sh",
