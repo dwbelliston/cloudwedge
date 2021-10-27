@@ -22,5 +22,8 @@
     "local:cleanup": "npm run build CleanupResourcesFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/cleanup_resources/input.json CleanupResourcesFunction"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "retype": "^0.2.0"
+  }
 }
