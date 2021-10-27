@@ -37,6 +37,10 @@ jobs:
           pwd
           ls
 
+      - name: Deploy Infra
+        run: |
+          npm run docs:infra
+
       # - name: Deploy West
       #   run: |
       #     npm run app:roll "us-west-2"
