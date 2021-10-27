@@ -31,11 +31,13 @@ jobs:
       - name: Install
         run: |
           npm install
+          pwd
+          ls
 
-      - name: Deploy West
-        run: |
-          npm run deploy "us-west-2"
+      # - name: Deploy West
+      #   run: |
+      #     npm run app:roll "us-west-2"
 
-      - name: Deploy docs
-        run: |
-          npm run docs:publish
+      # - name: Deploy docs
+      #   run: |
+      #     npm run docs:publish
