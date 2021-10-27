@@ -21,15 +21,15 @@ links:
     link: /README.md
 
   - text: GitHub
-    link: https://github.com/1strategy/cloudwedge
+    link: https://github.com/dwbelliston/cloudwedge
     target: blank
 
   - text: Discussions
-    link: https://github.com/cloudwedge/cloudwedge/discussions
+    link: https://github.com/dwbelliston/cloudwedge/discussions
     target: blank
 
   - text: Issues
-    link: https://github.com/cloudwedge/cloudwedge/issues
+    link: https://github.com/dwbelliston/cloudwedge/issues
     target: blank
 
   # - text: Twitter
