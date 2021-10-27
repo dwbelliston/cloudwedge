@@ -32,9 +32,9 @@ jobs:
         run: |
           npm install
 
-      - name: Deploy Infra
-        run: |
-          npm run docs:infra
+      # - name: Deploy Infra
+      #   run: |
+      #     npm run docs:infra
 
       - name: Sync Site
         run: |
