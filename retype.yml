@@ -1,5 +1,5 @@
 input: ./docs
-output: .cloudwedge
+output: docsbuilt
 url: cloudwedge.io
 
 branding:
