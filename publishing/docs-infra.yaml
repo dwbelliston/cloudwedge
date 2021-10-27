@@ -1,0 +1,215 @@
+# Deploys bucket for docs infra
+
+# Cloudfront and s3 bucket
+
+Parameters:
+
+  Env:
+    Description: Name of the domain the docs are published to
+    Type: String
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # Bucket
+  # Create bucket static site logs
+  # ---------------------------------------------------------------------------
+  S3BucketLogs:
+    Type: AWS::S3::Bucket
+    Properties:
+      # AccelerateConfiguration:
+      #   AccelerateConfiguration
+      AccessControl: LogDeliveryWrite
+      # AnalyticsConfigurations:
+      #   - AnalyticsConfiguration
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub 'cloudwedge-${Env}-web-logs'
+      # CorsConfiguration:
+      #   CorsConfiguration
+      # InventoryConfigurations:
+      #   - InventoryConfiguration
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteMultipartUploadAfter1Day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+          - Id: TransitionWithAge
+            Status: Enabled
+            Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+              - StorageClass: GLACIER
+                TransitionInDays: 365
+      # LoggingConfiguration:
+      #   LoggingConfiguration
+      # MetricsConfigurations:
+      #   - MetricsConfiguration
+      # NotificationConfiguration:
+      #   NotificationConfiguration
+      # ObjectLockConfiguration:
+      #   ObjectLockConfiguration
+      # ObjectLockEnabled: Boolean
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: TRUE
+        BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
+        RestrictPublicBuckets: TRUE
+      # ReplicationConfiguration:
+      #   ReplicationConfiguration
+      # Tags:
+      #   - Tag
+      # VersioningConfiguration:
+      #   VersioningConfiguration
+      # WebsiteConfiguration:
+      #   WebsiteConfiguration
+
+
+  # ---------------------------------------------------------------------------
+  # Bucket
+  # Create bucket static site static files
+  # ---------------------------------------------------------------------------
+  S3BucketRoot:
+    Type: AWS::S3::Bucket
+    Properties:
+      # AccelerateConfiguration:
+      #   AccelerateConfiguration
+      # AccessControl: LogDeliveryWrite
+      # AnalyticsConfigurations:
+      #   - AnalyticsConfiguration
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub 'cloudwedge-${Env}-web-root'
+      # CorsConfiguration:
+      #   CorsConfiguration
+      # InventoryConfigurations:
+      #   - InventoryConfiguration
+      LoggingConfiguration:
+        DestinationBucketName:
+          Ref: S3BucketLogs
+        LogFilePrefix: origin/
+      # MetricsConfigurations:
+      #   - MetricsConfiguration
+      # NotificationConfiguration:
+      #   NotificationConfiguration
+      # ObjectLockConfiguration:
+      #   ObjectLockConfiguration
+      # ObjectLockEnabled: Boolean
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: TRUE
+        BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
+        RestrictPublicBuckets: TRUE
+      # ReplicationConfiguration:
+      #   ReplicationConfiguration
+      # Tags:
+      #   - Tag
+      # VersioningConfiguration:
+      #   VersioningConfiguration
+      # WebsiteConfiguration:
+      #   WebsiteConfiguration
+
+  # ---------------------------------------------------------------------------
+  # Cloudfront origin identity
+  # Create bucket static site static files
+  # ---------------------------------------------------------------------------
+  # CloudFrontOriginAccessIdentity:
+  #   Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+  #   Properties:
+  #     CloudFrontOriginAccessIdentityConfig:
+  #       Comment: CloudFront OAI for ${self:custom.domainName.${self:provider.stage}}
+
+
+  # ---------------------------------------------------------------------------
+  # CloudFront Distribution
+  # Distro in front of the s3 static bucket
+  # ---------------------------------------------------------------------------
+  # CloudFrontDistribution:
+  #   Type: AWS::CloudFront::Distribution
+  #   Properties:
+  #     DistributionConfig:
+  #       Aliases:
+  #         - ${self:custom.domainName.${self:provider.stage}}
+  #       # CacheBehaviors:
+  #       #   - CacheBehavior
+  #       # Comment: String
+  #       CustomErrorResponses:
+  #         - ErrorCachingMinTTL: 60
+  #           ErrorCode: 404
+  #           ResponseCode: 404
+  #           ResponsePagePath: /index.html
+  #         - ErrorCachingMinTTL: 60
+  #           ErrorCode: 403
+  #           ResponseCode: 403
+  #           ResponsePagePath: /index.html
+  #       DefaultCacheBehavior:
+  #         Compress: true
+  #         DefaultTTL: 60
+  #         ForwardedValues:
+  #           QueryString: true
+  #         MaxTTL: 60
+  #         TargetOriginId:
+  #           Fn::Sub: S3-${AWS::StackName}-root
+  #         # LambdaFunctionAssociations:
+  #         # - EventType: origin-response
+  #         #   LambdaFunctionARN:
+  #         #     Ref: Lambdaversion
+  #         ViewerProtocolPolicy: redirect-to-https
+  #       Enabled: true
+  #       HttpVersion: http2
+  #       DefaultRootObject: index.html
+  #       IPV6Enabled: true
+  #       Logging:
+  #         Bucket: !GetAtt S3BucketLogs.DomainName
+  #         IncludeCookies: false
+  #         Prefix: cdn/
+  #       # OriginGroups:
+  #       #   OriginGroups
+  #       Origins:
+  #       - DomainName: !GetAtt S3BucketRoot.DomainName
+  #         Id:
+  #           Fn::Sub: S3-${AWS::StackName}-root
+  #         S3OriginConfig:
+  #           OriginAccessIdentity:
+  #             Fn::Join:
+  #             - ''
+  #             - - origin-access-identity/cloudfront/
+  #               - Ref: CloudFrontOriginAccessIdentity
+  #       PriceClass: PriceClass_All
+  #       # Restrictions:
+  #       #   Restrictions
+  #       ViewerCertificate:
+  #         AcmCertificateArn: ${self:custom.acmCertArn}
+  #         MinimumProtocolVersion: TLSv1.2_2019
+  #         SslSupportMethod: sni-only
+  #       # WebACLId: String
+  #     Tags:
+  #       - Key: app:name
+  #         Value: cloudwege-docs
+
+
+  # # ---------------------------------------------------------------------------
+  # # Bucket Policy
+  # # Create bucket static site static files
+  # # ---------------------------------------------------------------------------
+  # S3BucketPolicy:
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     Bucket:
+  #       Ref: S3BucketRoot
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Action:
+  #         - s3:GetObject
+  #         Effect: Allow
+  #         Resource: !Sub "${S3BucketRoot.Arn}/*"
+  #         Principal:
+  #           CanonicalUser:
+  #             Fn::GetAtt:
+  #             - CloudFrontOriginAccessIdentity
+  #             - S3CanonicalUserId
