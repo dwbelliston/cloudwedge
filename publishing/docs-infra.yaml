@@ -7,6 +7,11 @@ Parameters:
     Description: Environment deploy to
     Type: String
 
+Conditions:
+  IsPrd: !Equals
+    - !Ref Env
+    - prd
+
 
 Resources:
   # ---------------------------------------------------------------------------
@@ -108,7 +113,7 @@ Resources:
   # ---------------------------------------------------------------------------
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
-    Condition: False
+    Condition: IsPrd
     Properties:
       DistributionConfig:
         Aliases:
