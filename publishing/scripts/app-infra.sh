@@ -42,6 +42,7 @@ for REGION in "${REGION_LIST[@]}"; do
         --stack-name $STACK_NAME \
         --region $REGION \
         --template-file "$TEMPLATE_FILE" \
+        --parameter-overrides Env=$TARGET_ENV \
         --no-fail-on-empty-changeset;
 
 
