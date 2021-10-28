@@ -88,6 +88,7 @@ Parameters:
   OrganizationalUnitIds:
     Type: CommaDelimitedList
     Description: "Comma-delimited list of the organization ids into which this stackset should be deployed. For example: r-0123"
+    Default: ""
 
   DebugLocalRoleArn:
     Type: String
@@ -103,6 +104,12 @@ Conditions:
     - !Equals
       - !Ref CloudWedgeIamRoleNamePrefix
       - ""
+
+  IsUseSpokes: !Not
+    - !Equals
+      - !Ref OrganizationalUnitIds
+      - ""
+
 Globals:
   Function:
     Runtime: python3.8
@@ -568,6 +575,88 @@ Resources:
                   "aws:PrincipalOrgID": !Ref OrganizationalUnitIds
 
 
+# ---------------------------------------------------------------------------
+  # Role
+  # Match events to cloudwedge tags
+  # ---------------------------------------------------------------------------
+  # Role for event rule to use to start step function
+  CloudWedgeTagEventRuleRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-hub-event-rule-role"
+        - "cloudwedge-hub-event-rule-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        # If its the hub account, allow invoking step function
+        - PolicyName: StatesExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: states:StartExecution
+                Resource: !Ref HubCloudWedgeStepFunctionBuilderArn
+
+  # ---------------------------------------------------------------------------
+  # Event Rules
+  # Match events to cloudwedge tags
+  # ---------------------------------------------------------------------------
+  CloudWedgeTagEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: >
+        Match events for any cloudwedge tag and send to step function so the alarms
+        can be updated
+      EventPattern:
+        detail-type:
+          - Tag Change on Resource
+        source:
+          - aws.tag
+        detail:
+          changed-tag-keys:
+            - { "prefix": "cloudwedge:" }
+          service:
+            - { "anything-but": ["cloudformation"] }
+      State: ENABLED
+      Targets:
+        # forward events to the hub step function
+        - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+          RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+          Id: "cloudwedge-tag-event-to-steps-builder"
+
+
+  CloudWedgeAutoscalingTagEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: >
+        Match events for any cloudwedge tag changed on autoscaling group and send to step function so the alarms
+        can be updated
+      EventPattern:
+        detail-type:
+          - AWS API Call via CloudTrail
+        source:
+          - aws.autoscaling
+        detail:
+          eventName: ["DeleteTags", "CreateOrUpdateTags"]
+          requestParameters:
+            tags:
+              key:
+                - { "prefix": "cloudwedge:" }
+      State: ENABLED
+      Targets:
+        #forward events to the hub step function
+        - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+          RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+          Id: "cloudwedge-tag-event-to-steps-builder"
 
   # ---------------------------------------------------------------------------
   # SpokeStackSet
@@ -576,6 +665,7 @@ Resources:
   # ---------------------------------------------------------------------------
   CloudWedgeSpokeStackSet:
     Type: AWS::CloudFormation::StackSet
+    Condition: !Ref IsUseSpokes
     Properties:
       StackSetName: cloudwedge-spoke-stackset
       Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder

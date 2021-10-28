@@ -42,10 +42,6 @@ Parameters:
     Default: ""
 
 Conditions:
-  IsHubAccount: !Equals
-    - !Ref HubAccountId
-    - !Ref AWS::AccountId
-
   IsUseIamRoleNamePrefix: !Not
     - !Equals
       - !Ref CloudWedgeIamRoleNamePrefix
@@ -168,24 +164,14 @@ Resources:
             Action: "sts:AssumeRole"
       Path: "/"
       Policies:
-        - !If
-          - IsHubAccount
-          # If its the hub account, allow invoking step function
-          - PolicyName: StatesExecutionPolicy
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: Allow
-                  Action: states:StartExecution
-                  Resource: !Ref HubCloudWedgeStepFunctionBuilderArn
-          # If its not the hub account, allow forwarding to hub
-          - PolicyName: AllowForwardToHubPolicy
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: Allow
-                  Action: events:PutEvents
-                  Resource: !Sub "arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default"
+        # If its not the hub account, allow forwarding to hub
+        - PolicyName: AllowForwardToHubPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: events:PutEvents
+                Resource: !Sub "arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default"
 
   # ---------------------------------------------------------------------------
   # Event Rules
@@ -209,16 +195,9 @@ Resources:
             - { "anything-but": ["cloudformation"] }
       State: ENABLED
       Targets:
-        - !If
-          - IsHubAccount
-          # If its the hub account, forward events to the hub step function
-          - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
-            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
-            Id: "cloudwedge-tag-event-to-steps-builder"
-          # If its not the hub account, forward events to the hub event bus
-          - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
-            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
-            Id: "cloudwedge-tag-event-to-hub-bus"
+        - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
+          RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+          Id: "cloudwedge-tag-event-to-hub-bus"
 
   CloudWedgeAutoscalingTagEventRule:
     Type: AWS::Events::Rule
@@ -239,16 +218,10 @@ Resources:
                 - { "prefix": "cloudwedge:" }
       State: ENABLED
       Targets:
-        - !If
-          - IsHubAccount
-          # If its the hub account, forward events to the hub step function
-          - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
-            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
-            Id: "cloudwedge-tag-event-to-steps-builder"
-          # If its not the hub account, forward events to the hub event bus
-          - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
-            RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
-            Id: "cloudwedge-tag-event-to-hub-bus"
+        # If its not the hub account, forward events to the hub event bus
+        - Arn: !Sub arn:aws:events:${AWS::Region}:${HubAccountId}:event-bus/default
+          RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+          Id: "cloudwedge-tag-event-to-hub-bus"
 
 
   # TODO: Custom resource invoke to tear down stacks
