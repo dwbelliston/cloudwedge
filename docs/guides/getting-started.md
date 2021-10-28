@@ -56,11 +56,13 @@ Putting these together we tell CloudFormation to create a stack called `cloudwed
 You will also note that the base url is set to the `us-west-2 (Oregon)` AWS region. You can change that to target the region you want to deploy to.
 ===
 
-[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Oregon" target="blank"](https://retype.com/)
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to N. Cali" target="blank"](https://us-west-1.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-west-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
 
-[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to N Virginia" target="blank"](https://retype.com/)
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Oregon" target="blank"](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
 
-[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Ohio" target="blank"](https://retype.com/)
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to N Virginia" target="blank"](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-east-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Ohio" target="blank"](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
 
 
 Once you clicked the link to deploy from above, you will now be in the AWS console.
