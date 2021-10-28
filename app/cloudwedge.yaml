@@ -666,7 +666,7 @@ Resources:
   # ---------------------------------------------------------------------------
   CloudWedgeSpokeStackSet:
     Type: AWS::CloudFormation::StackSet
-    Condition: !Ref IsUseSpokes
+    Condition: IsUseSpokes
     Properties:
       StackSetName: cloudwedge-spoke-stackset
       Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
