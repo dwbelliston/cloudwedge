@@ -14,6 +14,8 @@ ARTIFACT_BUCKET=cloudwedge-public-artifacts
 ARTIFACT_BUCKET_PREFIX=public/cloudwedge
 CAPABILITIES=CAPABILITY_IAM
 ACL=public-read
+STACK_NAME=cloudwedge-app-infra
+TEMPLATE_FILE=publishing/cw-artifact-bucket.yaml
 
 RED='\033[01;31m'
 GREEN='\033[01;32m'
@@ -31,12 +33,18 @@ IFS=","; read -ra REGION_LIST <<< "$temp"; unset IFS
 VERSION=$(cat package.json | python -c "import sys, json; print(json.load(sys.stdin)['version'])") && echo $VERSION
 
 
-./publishing/scripts/build.sh
-
-
 # Publish
 for REGION in "${REGION_LIST[@]}"; do
     echo "${CYAN}================ Publishing to $REGION ================${NOCOLOR}"
+
+    echo -e "${CYAN}Deploying publishing infra to ${REGION}${NOCOLOR}";
+    aws cloudformation deploy \
+        --stack-name $STACK_NAME \
+        --region $REGION \
+        --template-file "$TEMPLATE_FILE" \
+        --no-fail-on-empty-changeset;
+
+
     # echo "${BLUE}Removing old version files (if they exist)...${NOCOLOR}"
     # aws s3 rm --recursive s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/ --region $REGION
     # echo "${BLUE}Publishing SAM package to S3 bucket ${ARTIFACT_BUCKET}-${REGION}...${NOCOLOR}"

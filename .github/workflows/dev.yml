@@ -13,7 +13,7 @@ env:
   TARGET_ENV: dev
 
 jobs:
-  publish:
+  releaseDocs:
     name: Publish to retype branch
 
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
         with:
           update-branch: true
 
-  releaseDocs:
+  publishApp:
     environment: dev
     runs-on: ubuntu-latest
 
