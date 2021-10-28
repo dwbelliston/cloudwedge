@@ -111,6 +111,11 @@ Conditions:
       - !Join ["", !Ref OrganizationalUnitIds]
       - ""
 
+  IsUseDebugLocalRole: !Not
+    - !Equals
+      - !Ref DebugLocalRoleArn
+      - ""
+
 Globals:
   Function:
     Runtime: python3.8
