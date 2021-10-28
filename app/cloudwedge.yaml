@@ -105,6 +105,7 @@ Conditions:
       - !Ref CloudWedgeIamRoleNamePrefix
       - ""
 
+  # If orgs are provided, use the stackset spokes to deploy
   IsUseSpokes: !Not
     - !Equals
       - !Ref OrganizationalUnitIds
