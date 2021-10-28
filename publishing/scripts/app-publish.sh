@@ -47,5 +47,5 @@ for REGION in "${REGION_LIST[@]}"; do
     aws s3 sync ./publishing/media s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/media/$ENV --acl public-read --delete
     echo -e "${BLUE}Syncing media to public s3 bucket media folder...${NOCOLOR}"
     aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge.yaml --region $REGION --acl $ACL
-    aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-spoke.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge-spoke.yaml --region $REGION --acl $ACL
+    # aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-spoke.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge-spoke.yaml --region $REGION --acl $ACL
 done
