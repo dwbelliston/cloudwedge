@@ -601,18 +601,20 @@ Resources:
             - !Ref AWS::Region
       Parameters:
         # Used for parameter overrides, if necessary
-        - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
-          ParameterValue: !Ref CloudWedgeBuilderStateMachine
         - ParameterKey: CloudWedgeEnvironment
           ParameterValue: !Ref CloudWedgeEnvironment
-        - ParameterKey: HubAccountId
-          ParameterValue: !Ref AWS::AccountId
-        - ParameterKey: HubAccountWorkerRoleArn
-          ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
         - ParameterKey: CloudWedgeIamRoleNamePrefix
           ParameterValue: !Ref CloudWedgeIamRoleNamePrefix
+        - ParameterKey: HubAccountId
+          ParameterValue: !Ref AWS::AccountId
         - ParameterKey: HubPrivateAssetsS3BucketName
           ParameterValue: !Ref PrivateAssetsS3Bucket
+        - ParameterKey: HubAccountWorkerRoleArn
+          ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
+        - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
+          ParameterValue: !Ref CloudWedgeBuilderStateMachine
         - ParameterKey: HubDebugLocalRoleArn
           ParameterValue: !Ref DebugLocalRoleArn
+
+
       TemplateURL: !Sub "https://cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}.s3.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
