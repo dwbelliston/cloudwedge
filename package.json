@@ -6,6 +6,7 @@
     "version": "echo $npm_package_version",
     "app": "",
     "app:build": "./publishing/scripts/app-build.sh $1",
+    "app:infra": "./publishing/scripts/app-infra.sh $1",
     "app:publish": "./publishing/scripts/publish.sh",
     "app:roll": "npm run app:build && npm run app:publish",
     "docs": "",
