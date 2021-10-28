@@ -594,7 +594,7 @@ Resources:
           ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
         - ParameterKey: CloudWedgeIamRoleNamePrefix
           ParameterValue: !Ref CloudWedgeIamRoleNamePrefix
-        - ParameterKey: HubPrivateAssetsS3Bucket
+        - ParameterKey: HubPrivateAssetsS3BucketName
           ParameterValue: !Ref PrivateAssetsS3Bucket
         - ParameterKey: HubDebugLocalRoleArn
           ParameterValue: !Ref DebugLocalRoleArn
