@@ -13,7 +13,7 @@ ARTIFACT_BUCKET=cloudwedge-public-artifacts-$TARGET_ENV
 ARTIFACT_BUCKET_PREFIX=public/cloudwedge
 ACL=public-read
 STACK_NAME=cloudwedge-app-infra
-TEMPLATE_FILE=publishing/cw-artifact-bucket.yaml
+SPOKE_TEMPLATE_FILE=app/cloudwedge-spoke.yaml
 
 RED='\033[01;31m'
 GREEN='\033[01;32m'
@@ -43,9 +43,11 @@ for REGION in "${REGION_LIST[@]}"; do
     for obj in "${objects[@]}"; do echo "- Putting $ACL acl on $obj"; aws s3api put-object-acl --acl $ACL --bucket ${ARTIFACT_BUCKET}-${REGION} --key $obj --region $REGION; done
     echo -e "${BLUE}Uploading template file...${NOCOLOR}"
     aws s3 cp cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/ --region $REGION --acl $ACL
+    echo -e "${BLUE}Uploading spoke template file for stack set reference...${NOCOLOR}"
+    aws s3 cp $SPOKE_TEMPLATE_FILE s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/ --region $REGION --acl $ACL
     echo -e "${BLUE}Syncing media to public s3 bucket media folder...${NOCOLOR}"
     aws s3 sync ./publishing/media s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/media/$ENV --acl public-read --delete
     echo -e "${BLUE}Syncing media to public s3 bucket media folder...${NOCOLOR}"
     aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge.yaml --region $REGION --acl $ACL
-    # aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-spoke.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge-spoke.yaml --region $REGION --acl $ACL
+    aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-spoke.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge-spoke.yaml --region $REGION --acl $ACL
 done

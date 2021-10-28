@@ -598,4 +598,4 @@ Resources:
           ParameterValue: !Ref PrivateAssetsS3Bucket
         - ParameterKey: HubDebugLocalRoleArn
           ParameterValue: !Ref DebugLocalRoleArn
-      TemplateURL: !Sub "https://cloudwedge-public-artifacts-${AWS::Region}.s3-${AWS::Region}.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
+      TemplateURL: !Sub "https://cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}.s3.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
