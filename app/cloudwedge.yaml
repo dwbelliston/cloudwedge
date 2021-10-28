@@ -660,6 +660,95 @@ Resources:
           Id: "cloudwedge-tag-event-to-steps-builder"
 
   # ---------------------------------------------------------------------------
+  # Role
+  # Used by the hub accounts step function lambdas to assume into the spoke
+  # read resources, and create cloudformation stacks with alarms
+  # ---------------------------------------------------------------------------
+  CloudWedgeWorkerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
+        - "cloudwedge-spoke-worker-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Allow hub role to assume me
+          - Effect: "Allow"
+            Principal:
+              AWS: !GetAtt CloudWedgeHubWorkerRole.Arn
+            Action: "sts:AssumeRole"
+          - !If
+            - IsUseDebugLocalRole
+            - Effect: "Allow"
+              Principal:
+                AWS: !Ref DebugLocalRoleArn
+              Action: "sts:AssumeRole"
+            - !Ref AWS::NoValue
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      Policies:
+        - PolicyName: AccessCloudWatch
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudWatchAlarms
+                Effect: Allow
+                Action:
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:PutMetricAlarm
+                  - cloudwatch:DeleteAlarms
+                Resource: !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+              - Sid: AllowCloudWatchDashboard
+                Effect: Allow
+                Action:
+                  - cloudwatch:GetDashboard
+                  - cloudwatch:ListDashboards
+                  - cloudwatch:PutDashboard
+                  - cloudwatch:ListMetrics
+                  - cloudwatch:DeleteDashboards
+                Resource:
+                  - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+                  - !Sub "arn:aws:cloudwatch::${AWS::AccountId}:dashboard/cloudwedge-*"
+        - PolicyName: AccessCloudFormation
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:UpdateStack
+                  - cloudformation:DeleteStack
+                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudwedge-*/*"
+              - Sid: AllowCloudFormationList
+                Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: "*"
+        - PolicyName: AccessS3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                  - s3:GetObjectVersion
+                  - s3:GetLifecycleConfiguration
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:PutLifecycleConfiguration
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
+                  - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
+
+  # ---------------------------------------------------------------------------
   # SpokeStackSet
   # Sets up the spokes on a stack set to send out to mutli-account/region
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-stackset.html
