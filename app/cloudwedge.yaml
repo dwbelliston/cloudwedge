@@ -559,43 +559,43 @@ Resources:
   # SpokeStackSet
   # Sets up the spokes on a stack set to send out to mutli-account/region
   # ---------------------------------------------------------------------------
-  # CloudWedgeSpokeStackSet:
-  #   Type: AWS::CloudFormation::StackSet
-  #   Properties:
-  #     StackSetName: cloudwedge-spoke-stackset
-  #     Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
-  #     # AutoDeployment:
-  #     #   Enabled: true
-  #     #   RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
-  #     Capabilities:
-  #       - CAPABILITY_IAM
-  #       - CAPABILITY_NAMED_IAM
-  #     OperationPreferences:
-  #       FailureToleranceCount: 0
-  #       MaxConcurrentCount: 1
-  #       RegionOrder:
-  #         - !Ref AWS::Region
-  #     PermissionModel: SELF_MANAGED
-  #     StackInstancesGroup:
-  #       - DeploymentTargets:
-  #           # OrganizationalUnitIds: !Ref OrganizationalUnits
-  #           Accounts: !Ref SpokeAccountIds
-  #         Regions:
-  #           - !Ref AWS::Region
-  #     Parameters:
-  #       # Used for parameter overrides, if necessary
-  #       - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
-  #         ParameterValue: !Ref CloudWedgeBuilderStateMachine
-  #       - ParameterKey: CloudWedgeEnvironment
-  #         ParameterValue: !Ref CloudWedgeEnvironment
-  #       - ParameterKey: HubAccountId
-  #         ParameterValue: !Ref AWS::AccountId
-  #       - ParameterKey: HubAccountWorkerRoleArn
-  #         ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
-  #       - ParameterKey: CloudWedgeIamRoleNamePrefix
-  #         ParameterValue: !Ref CloudWedgeIamRoleNamePrefix
-  #       - ParameterKey: HubPrivateAssetsS3Bucket
-  #         ParameterValue: !Ref PrivateAssetsS3Bucket
-  #       - ParameterKey: HubDebugLocalRoleArn
-  #         ParameterValue: !Ref DebugLocalRoleArn
-  #     TemplateURL: !Sub "https://cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}.s3.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
+  CloudWedgeSpokeStackSet:
+    Type: AWS::CloudFormation::StackSet
+    Properties:
+      StackSetName: cloudwedge-spoke-stackset
+      Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
+      # AutoDeployment:
+      #   Enabled: true
+      #   RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      Capabilities:
+        - CAPABILITY_IAM
+        - CAPABILITY_NAMED_IAM
+      OperationPreferences:
+        FailureToleranceCount: 0
+        MaxConcurrentCount: 1
+        RegionOrder:
+          - !Ref AWS::Region
+      PermissionModel: SELF_MANAGED
+      StackInstancesGroup:
+        - DeploymentTargets:
+            # OrganizationalUnitIds: !Ref OrganizationalUnits
+            Accounts: !Ref SpokeAccountIds
+          Regions:
+            - !Ref AWS::Region
+      Parameters:
+        # Used for parameter overrides, if necessary
+        - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
+          ParameterValue: !Ref CloudWedgeBuilderStateMachine
+        - ParameterKey: CloudWedgeEnvironment
+          ParameterValue: !Ref CloudWedgeEnvironment
+        - ParameterKey: HubAccountId
+          ParameterValue: !Ref AWS::AccountId
+        - ParameterKey: HubAccountWorkerRoleArn
+          ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
+        - ParameterKey: CloudWedgeIamRoleNamePrefix
+          ParameterValue: !Ref CloudWedgeIamRoleNamePrefix
+        - ParameterKey: HubPrivateAssetsS3Bucket
+          ParameterValue: !Ref PrivateAssetsS3Bucket
+        - ParameterKey: HubDebugLocalRoleArn
+          ParameterValue: !Ref DebugLocalRoleArn
+      TemplateURL: !Sub "https://cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}.s3.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
