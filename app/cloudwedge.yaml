@@ -23,10 +23,15 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Spoke Account Setup"
+          default: "Deployment target"
         Parameters:
-          - SpokeAccountIds
+          - OrganizationalUnitIds
           # - SpokeAccountRegions
+      # - Label:
+      #     default: "Spoke Account Setup"
+      #   Parameters:
+      #     - SpokeAccountIds
+      #     # - SpokeAccountRegions
       - Label:
           default: "Optional Features"
         Parameters:
@@ -44,8 +49,10 @@ Metadata:
         default: "CloudWedge Version"
       CloudWedgeIamRoleNamePrefix:
         default: "CloudWedge iam role prefix"
-      SpokeAccountIds:
-        default: "Spoke Account Ids"
+      # SpokeAccountIds:
+      #   default: "Spoke Account Ids"
+      OrganizationalUnitIds:
+        default: "Organization Ids"
       DebugLocalRoleArn:
         default: "Debug local role arn"
       # SpokeAccountRegions:
@@ -74,9 +81,13 @@ Parameters:
     Description: Auto detect alarm level from resource name (name-prd maps to Critical)
     Default: False
 
-  SpokeAccountIds:
+  # SpokeAccountIds:
+  #   Type: CommaDelimitedList
+  #   Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+
+  OrganizationalUnitIds:
     Type: CommaDelimitedList
-    Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+    Description: "Comma-delimited list of the organization ids into which this stackset should be deployed. For example: r-0123"
 
   DebugLocalRoleArn:
     Type: String
@@ -153,7 +164,8 @@ Resources:
               - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
               - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
             Principal:
-                AWS: !Ref SpokeAccountIds
+                # AWS: !Ref SpokeAccountIds
+                AWS: !Ref OrganizationalUnitIds
 
   ##
   ##
@@ -544,7 +556,8 @@ Resources:
       Statement:
           Effect: "Allow"
           Principal:
-              AWS: !Ref SpokeAccountIds
+              AWS: !Ref OrganizationalUnitIds
+              # AWS: !Ref SpokeAccountIds
               # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
           Action:
               - "events:PutEvents"
@@ -558,15 +571,18 @@ Resources:
   # ---------------------------------------------------------------------------
   # SpokeStackSet
   # Sets up the spokes on a stack set to send out to mutli-account/region
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-stackset.html
   # ---------------------------------------------------------------------------
   CloudWedgeSpokeStackSet:
     Type: AWS::CloudFormation::StackSet
     Properties:
       StackSetName: cloudwedge-spoke-stackset
       Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
-      # AutoDeployment:
-      #   Enabled: true
-      #   RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      AutoDeployment:
+        Enabled: true
+        RetainStacksOnAccountRemoval: False
+        # RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      # CallAs: SELF
       Capabilities:
         - CAPABILITY_IAM
         - CAPABILITY_NAMED_IAM
@@ -575,11 +591,12 @@ Resources:
         MaxConcurrentCount: 1
         RegionOrder:
           - !Ref AWS::Region
-      PermissionModel: SELF_MANAGED
+      # PermissionModel: SELF_MANAGED
+      PermissionModel: SERVICE_MANAGED
       StackInstancesGroup:
         - DeploymentTargets:
-            # OrganizationalUnitIds: !Ref OrganizationalUnits
-            Accounts: !Ref SpokeAccountIds
+            OrganizationalUnitIds: !Ref OrganizationalUnitIds
+            # Accounts: !Ref SpokeAccountIds
           Regions:
             - !Ref AWS::Region
       Parameters:
