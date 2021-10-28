@@ -29,7 +29,7 @@ To make it easy to deploy, we have created the link to deploy this to CloudForma
 Here is the full link, you can copy and past this into your browser.
 
 ```
-https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts.s3-us-west-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
+https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
 ```
 
 Notice that the link is specific to the `us-west-2` region. You can change out the region identifier to any of the regions you would like.
@@ -48,10 +48,10 @@ Adding to the base url, we are going to identify the stack template we want to c
 
 ```
 ?stackName=cloudwedge
-&templateURL=https://cloudwedge-public-artifacts.s3-us-west-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
+&templateURL=https://cloudwedge-public-artifacts-dev-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
 ```
 
-Putting these together we tell CloudFormation to create a stack called `cloudwedge` using the template located at `https://cloudwedge-public-artifacts.s3-us-west-2.amazonaws.com/public/...`
+Putting these together we tell CloudFormation to create a stack called `cloudwedge` using the template located at `https://cloudwedge-public-artifacts-dev-us-east-2.s3.amazonaws.com/public/cloudwedge/...`
 
 You will also note that the base url is set to the `us-west-2 (Oregon)` AWS region. You can change that to target the region you want to deploy to.
 ===
