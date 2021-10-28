@@ -7,7 +7,7 @@
 ENV=$TARGET_ENV
 
 # What regions
-REGIONS=us-west-2,us-east-1
+REGIONS=us-west-2,us-east-1,us-east-2
 STACK_NAME=cloudwedge-app-infra
 TEMPLATE_FILE=publishing/cw-artifact-bucket.yaml
 

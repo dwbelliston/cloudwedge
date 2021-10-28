@@ -7,7 +7,7 @@
 ENV=$TARGET_ENV
 
 # What regions
-REGIONS=us-west-2,us-east-1
+REGIONS=us-west-2,us-east-1,us-east-2
 
 ARTIFACT_BUCKET=cloudwedge-public-artifacts-$TARGET_ENV
 # Putting it in public folder, since the bucket policy has open access to public
@@ -46,4 +46,7 @@ for REGION in "${REGION_LIST[@]}"; do
     aws s3 cp cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/ --region $REGION --acl $ACL
     echo -e "${BLUE}Syncing media to public s3 bucket media folder...${NOCOLOR}"
     aws s3 sync ./publishing/media s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/media/$ENV --acl public-read --delete
+    echo -e "${BLUE}Syncing media to public s3 bucket media folder...${NOCOLOR}"
+    aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-$VERSION.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge.yaml --region $REGION --acl $ACL
+    aws s3 cp s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/$VERSION/cloudwedge-spoke.yaml s3://${ARTIFACT_BUCKET}-${REGION}/$ARTIFACT_BUCKET_PREFIX/latest/cloudwedge-spoke.yaml --region $REGION --acl $ACL
 done
