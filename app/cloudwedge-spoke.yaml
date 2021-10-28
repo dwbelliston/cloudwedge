@@ -36,10 +36,10 @@ Parameters:
   #   Type: String
   #   Description: Hub Step function builder Id
 
-  # HubDebugLocalRoleArn:
-  #   Type: String
-  #   Description: 'Local role for debug use'
-  #   Default: ""
+  HubDebugLocalRoleArn:
+    Type: String
+    Description: 'Local role for debug use'
+    Default: ""
 
 Conditions:
   # IsHubAccount: !Equals
@@ -50,10 +50,10 @@ Conditions:
     - !Equals
       - !Ref CloudWedgeIamRoleNamePrefix
       - ""
-  # IsUseDebugLocalRole: !Not
-  #   - !Equals
-  #     - !Ref HubDebugLocalRoleArn
-  #     - ""
+  IsUseDebugLocalRole: !Not
+    - !Equals
+      - !Ref HubDebugLocalRoleArn
+      - ""
 
 Resources:
 
