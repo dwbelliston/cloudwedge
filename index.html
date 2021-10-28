@@ -27,9 +27,9 @@
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
     <link href="/static/favicon.png" rel="icon" />
-    <link href="/resources/css/retype.css?v=1.10.688712244652" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/resources/css/retype.css?v=1.10.688752595809" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/resources/js/config.js?v=1.10.688712244652" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/config.js?v=1.10.688752595809" defer data-turbo-track="reload"></script>
     <script type="text/javascript" src="/resources/js/retype.js?v=1.10" defer data-turbo-track="reload"></script>
 </head>
     <body>
@@ -203,40 +203,56 @@
         <span>Welcome to CloudWedge</span>
     </h1>
 </doc-anchor-target>
-<p><a href="https://cloudwedge.io/">CloudWedge</a> is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.</p>
+<p>CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.</p>
 <p><figure class="content-center">
     <img src="static/wedge-banner.png" alt="" />
     <figcaption class="caption"></figcaption>
 </figure>
 </p>
-<doc-anchor-target id="why-use-cloudwedge">
+<hr />
+<doc-anchor-target id="features">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#why-use-cloudwedge">#</doc-anchor-trigger>
-        <span>Why use CloudWedge</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#features">#</doc-anchor-trigger>
+        <span>Features</span>
     </h2>
 </doc-anchor-target>
 <p>CloudWedge is perfect for when you want to use the native AWS monitoring services, but you dont want to fuss with the all the implementation details. CloudWedge will provide the monitoring alarms and the dashboards you would have built by hand (or in CloudFormation) and give you back that time to focus on what really matters.</p>
 <p>Essentially, CloudWedge is doing the &quot;undifferentiated heavy lifting&quot; of setting up CloudWatch and and wiring it into an alerting pipeline using SNS.</p>
-<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
-    <span class="docs-emoji mr-2">&#x2601;&#xFE0F;</span>
-    <span>Native AWS</span>
-</span> CloudWedge is using 100% AWS native services from the cradle to the grave.</p>
-<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
-    <span class="docs-emoji mr-2">&#x1F510;</span>
-    <span>100% Privacy</span>
-</span> Your data never leaves your account. No 3rd party to ship data to, its all contained within the walls of your own home. Look at the source code yourself, we are not hiding anything. You have total control.</p>
-<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
-    <span class="docs-emoji mr-2">&#x1F7E2;</span>
-    <span>Operationally Easy</span>
-</span> You only have to learn the custom CloudWedge &quot;tags&quot; and add them to your resources.</p>
-<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
-    <span class="docs-emoji mr-2">&#x1F64B;</span>
-    <span>Opt-In Only</span>
-</span> You choose what to monitoring and how.</p>
-<p><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-green-700 bg-green-100 h-8 px-4 text-base rounded-md">
-    <span class="docs-emoji mr-2">&#x1F4A5;</span>
-    <span>Event Based</span>
-</span> You change your environment, CloudWedge will update itself. Its not as sophisticated as true AI, but you might start to think so.</p>
+<doc-anchor-target id="cloud-native-aws">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#cloud-native-aws">#</doc-anchor-trigger>
+        <span><span class="docs-emoji">&#x2601;&#xFE0F;</span> Native AWS</span>
+    </h4>
+</doc-anchor-target>
+<p>CloudWedge is using 100% AWS native services from the cradle to the grave.</p>
+<doc-anchor-target id="closed_lock_with_key-100-privacy">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#closed_lock_with_key-100-privacy">#</doc-anchor-trigger>
+        <span><span class="docs-emoji">&#x1F510;</span> 100% Privacy</span>
+    </h4>
+</doc-anchor-target>
+<p>Your data never leaves your account. No 3rd party to ship data to, its all contained within the walls of your own home. Look at the source code yourself, we are not hiding anything. You have total control.</p>
+<doc-anchor-target id="white_check_mark-easy-install">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#white_check_mark-easy-install">#</doc-anchor-trigger>
+        <span><span class="docs-emoji">&#x2705;</span> Easy install</span>
+    </h4>
+</doc-anchor-target>
+<p><a href="guides/getting-started/">Installation</a> takes only a minute. Them you only have to learn the custom CloudWedge &quot;tags&quot; and add them to your resources.</p>
+<doc-anchor-target id="raising_hand-opt-in-only">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#raising_hand-opt-in-only">#</doc-anchor-trigger>
+        <span><span class="docs-emoji">&#x1F64B;</span> Opt-In Only</span>
+    </h4>
+</doc-anchor-target>
+<p>You choose what to monitoring and how. Decided the resources you want supported from the available AWS <a href="services/">services</a>.</p>
+<doc-anchor-target id="boom-event-driven">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#boom-event-driven">#</doc-anchor-trigger>
+        <span><span class="docs-emoji">&#x1F4A5;</span> Event Driven</span>
+    </h4>
+</doc-anchor-target>
+<p>You change your environment, CloudWedge will update itself. Its not as sophisticated as true AI, but you might start to think so.</p>
 <div class="flex mb-6">
     <div class="flex-shrink-0 w-1 rounded-tl rounded-bl bg-yellow-500"></div>
     <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
@@ -282,6 +298,7 @@
         </div>
     </div>
 </div>
+<hr />
 <doc-anchor-target id="how-cloudwedge-works">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#how-cloudwedge-works">#</doc-anchor-trigger>
@@ -335,6 +352,7 @@
 </tr>
 </tbody>
 </table>
+<hr />
 <doc-anchor-target id="example-usage">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#example-usage">#</doc-anchor-trigger>
@@ -500,6 +518,7 @@
 </table>
    </doc-panel>
 </doc-panels>
+<hr />
 <doc-anchor-target id="deployment">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#deployment">#</doc-anchor-trigger>
@@ -507,6 +526,7 @@
     </h2>
 </doc-anchor-target>
 <p>CloudWedge is packaged in a CloudFormation template. This makes is very easy to deploy. You just need to get a url reference to the pre-baked CloudFormation and then use the AWS CloudFormation console to deploy the stack into your account.</p>
+<hr />
 <doc-anchor-target id="getting-started">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#getting-started">#</doc-anchor-trigger>
@@ -514,6 +534,7 @@
     </h2>
 </doc-anchor-target>
 <p>It&#x27;s always nice to have someone show you around a new place. Check out the <a href="guides/getting-started/">Getting Started</a> guide to get comfortable using CloudWedge.</p>
+<hr />
 <doc-anchor-target id="license">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#license">#</doc-anchor-trigger>
