@@ -7,6 +7,10 @@
 # sam build handles that for us. So we are going to use that
 # to prep the layer artifacts and the lambda artifacts.
 
+echo -e "${CYAN}Building sam application artifact${NOCOLOR}";
+
+CYAN='\033[01;36m'
+NOCOLOR='\033[0m'
 
 # Setup build output
 buildDir=.build

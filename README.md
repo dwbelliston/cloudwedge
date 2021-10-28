@@ -61,8 +61,8 @@
 |   |-- media                                 # Various images and media assests used in the app, published to s3
 |   |-- publishing.yaml                       # Template file to setup some of the resources needed to provide this to the public
 |   `-- scripts                               # Bash scripts for publishing the application
-|-- docs/                                     # Markdown files for the documentation page
-`-- mkdocs.yml                                # Configurations for making the documentation page
+|-- docs/                                     # Markdown files for the retype page, published to Github pages
+`-- retype.yml                                # Configurations for making the documentation page
 ```
 
 ## Developing
