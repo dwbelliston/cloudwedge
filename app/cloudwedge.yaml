@@ -605,7 +605,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: states:StartExecution
-                Resource: !Ref HubCloudWedgeStepFunctionBuilderArn
+                Resource: !Ref CloudWedgeBuilderStateMachine
 
   # ---------------------------------------------------------------------------
   # Event Rules
@@ -630,7 +630,7 @@ Resources:
       State: ENABLED
       Targets:
         # forward events to the hub step function
-        - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+        - Arn: !Ref CloudWedgeBuilderStateMachine
           RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
           Id: "cloudwedge-tag-event-to-steps-builder"
 
@@ -655,7 +655,7 @@ Resources:
       State: ENABLED
       Targets:
         #forward events to the hub step function
-        - Arn: !Ref HubCloudWedgeStepFunctionBuilderArn
+        - Arn: !Ref CloudWedgeBuilderStateMachine
           RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
           Id: "cloudwedge-tag-event-to-steps-builder"
 
