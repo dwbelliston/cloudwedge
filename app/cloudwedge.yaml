@@ -25,6 +25,7 @@ Metadata:
       - Label:
           default: "Deployment target"
         Parameters:
+          - PrincipalOrganizationalId
           - OrganizationalUnitIds
           # - SpokeAccountRegions
       # - Label:
@@ -51,6 +52,8 @@ Metadata:
         default: "CloudWedge iam role prefix"
       # SpokeAccountIds:
       #   default: "Spoke Account Ids"
+      PrincipalOrganizationalId:
+        default: "Principal Organization Id"
       OrganizationalUnitIds:
         default: "Organization Ids"
       DebugLocalRoleArn:
@@ -85,9 +88,13 @@ Parameters:
   #   Type: CommaDelimitedList
   #   Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
 
+  PrincipalOrganizationalId:
+    Type: String
+    Description: "The principal organization id for your organization (starts with a o- not an ou-). For example: 0-0123"
+
   OrganizationalUnitIds:
     Type: CommaDelimitedList
-    Description: "Comma-delimited list of the organization ids into which this stackset should be deployed. For example: r-0123"
+    Description: "Comma-delimited list of the organization ids into which this stackset should be deployed (starts with an ou-). For example: ou-0123"
     Default: ""
 
   DebugLocalRoleArn:
@@ -180,7 +187,7 @@ Resources:
                 # AWS: !Ref SpokeAccountIds
             Condition:
                 StringEquals:
-                    "aws:PrincipalOrgID": !Ref OrganizationalUnitIds
+                    "aws:PrincipalOrgID": !Ref PrincipalOrganizationalId
 
   ##
   ##
@@ -578,7 +585,7 @@ Resources:
           Resource: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
           Condition:
               StringEquals:
-                  "aws:PrincipalOrgID": !Ref OrganizationalUnitIds
+                  "aws:PrincipalOrgID": !Ref PrincipalOrganizationalId
 
 
 # ---------------------------------------------------------------------------
