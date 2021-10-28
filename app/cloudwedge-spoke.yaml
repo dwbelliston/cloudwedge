@@ -28,9 +28,9 @@ Parameters:
   #   Type: String
   #   Description: Hub account private assets bucket
 
-  # HubAccountWorkerRoleArn:
-  #   Type: String
-  #   Description: Arn of the role in the hub account that the lambdas will use to assume a role into the spoke
+  HubAccountWorkerRoleArn:
+    Type: String
+    Description: Arn of the role in the hub account that the lambdas will use to assume a role into the spoke
 
   # HubCloudWedgeStepFunctionBuilderArn:
   #   Type: String
@@ -69,21 +69,21 @@ Resources:
         - IsUseIamRoleNamePrefix
         - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
         - "cloudwedge-spoke-worker-role"
-      # AssumeRolePolicyDocument:
-      #   Version: "2012-10-17"
-      #   Statement:
-      #     # Allow hub role to assume me
-      #     - Effect: "Allow"
-      #       Principal:
-      #         AWS: !Ref HubAccountWorkerRoleArn
-      #       Action: "sts:AssumeRole"
-      #     - !If
-      #       - IsUseDebugLocalRole
-      #       - Effect: "Allow"
-      #         Principal:
-      #           AWS: !Ref HubDebugLocalRoleArn
-      #         Action: "sts:AssumeRole"
-      #       - !Ref AWS::NoValue
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Allow hub role to assume me
+          - Effect: "Allow"
+            Principal:
+              AWS: !Ref HubAccountWorkerRoleArn
+            Action: "sts:AssumeRole"
+          - !If
+            - IsUseDebugLocalRole
+            - Effect: "Allow"
+              Principal:
+                AWS: !Ref HubDebugLocalRoleArn
+              Action: "sts:AssumeRole"
+            - !Ref AWS::NoValue
       Path: "/"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/ReadOnlyAccess
@@ -110,23 +110,23 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
                   - !Sub "arn:aws:cloudwatch::${AWS::AccountId}:dashboard/cloudwedge-*"
-        # - PolicyName: AccessCloudFormation
-        #   PolicyDocument:
-        #     Version: "2012-10-17"
-        #     Statement:
-        #       - Sid: AllowCloudFormationCrud
-        #         Effect: Allow
-        #         Action:
-        #           - cloudformation:CreateStack
-        #           - cloudformation:DescribeStacks
-        #           - cloudformation:UpdateStack
-        #           - cloudformation:DeleteStack
-        #         Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudwedge-*/*"
-        #       - Sid: AllowCloudFormationList
-        #         Effect: Allow
-        #         Action:
-        #           - cloudformation:DescribeStacks
-        #         Resource: "*"
+        - PolicyName: AccessCloudFormation
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:UpdateStack
+                  - cloudformation:DeleteStack
+                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudwedge-*/*"
+              - Sid: AllowCloudFormationList
+                Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: "*"
         # - PolicyName: AccessS3
         #   PolicyDocument:
         #     Version: "2012-10-17"
