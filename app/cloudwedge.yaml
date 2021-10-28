@@ -108,7 +108,7 @@ Conditions:
   # If orgs are provided, use the stackset spokes to deploy
   IsUseSpokes: !Not
     - !Equals
-      - !Ref OrganizationalUnitIds
+      - !Join ["", !Ref OrganizationalUnitIds]
       - ""
 
 Globals:
