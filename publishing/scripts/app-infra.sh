@@ -7,7 +7,7 @@
 ENV=$TARGET_ENV
 
 # What regions
-REGIONS=us-west-2
+REGIONS=us-west-2,us-east-1
 
 ARTIFACT_BUCKET=cloudwedge-public-artifacts
 # Putting it in public folder, since the bucket policy has open access to public
