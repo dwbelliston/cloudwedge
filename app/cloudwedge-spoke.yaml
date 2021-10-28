@@ -42,9 +42,9 @@ Parameters:
   #   Default: ""
 
 Conditions:
-  IsHubAccount: !Equals
-    - !Ref HubAccountId
-    - !Ref AWS::AccountId
+  # IsHubAccount: !Equals
+  #   - !Ref HubAccountId
+  #   - !Ref AWS::AccountId
 
   IsUseIamRoleNamePrefix: !Not
     - !Equals
