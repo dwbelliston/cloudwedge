@@ -1,0 +1,59 @@
+name: prd release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**/README.md"
+      - "**/dox/**"
+      - "**/admin/**"
+
+env:
+  TARGET_ENV: prd
+
+jobs:
+  releaseDocs:
+    name: Release docs update
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: retypeapp/action-build@v1
+
+      - uses: retypeapp/action-github-pages@v1
+        with:
+          update-branch: true
+
+  releaseApp:
+    name: Release app updates
+    runs-on: ubuntu-latest
+    environment: prd
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Install
+        run: |
+          npm install
+
+      - name: Build app
+        run: |
+          npm run app:build
+
+      - name: Deploy infra
+        run: |
+          npm run app:infra
+
+      - name: Publish templates
+        run: |
+          npm run app:publish

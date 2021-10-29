@@ -123,6 +123,7 @@ You can use the built in vscode debugger to get the step through debugging exper
 - [Monitoring Best Practices](https://www.infoq.com/news/2020/10/aws-dashboards/)
 - [EventBridge cross accounts](https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-cross-account-event-delivery.html)
 - [IAM Bucket Policy](https://aws.amazon.com/blogs/security/control-access-to-aws-resources-by-using-the-aws-organization-of-iam-principals/)
+- [IAM PrincipalOrgId](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-principalorgid)
 
 #### Docs
 - [Retype docs](https://retype.com/)
