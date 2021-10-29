@@ -275,7 +275,7 @@ Resources:
         Variables:
           PRIVATE_ASSETS_BUCKET: !Ref PrivateAssetsS3Bucket
           # Public assets bucket created outside of app itself
-          PUBLIC_ASSETS_BUCKET: !Sub "cloudwedge-public-artifacts-${AWS::Region}"
+          PUBLIC_ASSETS_BUCKET: !Sub "cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}"
           ALARM_ACTION_TARGET_TOPIC_ARN: !Ref InternalActionTargetTopic
           USER_TARGET_TOPIC_ARN: !Ref CloudWedgeAlertsTopic
 
@@ -808,6 +808,4 @@ Resources:
           ParameterValue: !Ref CloudWedgeBuilderStateMachine
         - ParameterKey: HubDebugLocalRoleArn
           ParameterValue: !Ref DebugLocalRoleArn
-
-
       TemplateURL: !Sub "https://cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}.s3.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"

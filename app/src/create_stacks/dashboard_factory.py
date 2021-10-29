@@ -118,7 +118,7 @@ class DashboardFactory():
                 'width': 12,
                 'height': 2,
                 'properties': {
-                    'markdown': f'![img](https://{PUBLIC_ASSETS_BUCKET}-{REGION}.s3.amazonaws.com/public/cloudwedge/media/{ENVIRONMENT}/dashboard-frontmatter.png)'
+                    'markdown': f'![img](https://{PUBLIC_ASSETS_BUCKET}.s3.amazonaws.com/public/cloudwedge/media/dashboard-frontmatter.png)'
                 }
             },
             {
