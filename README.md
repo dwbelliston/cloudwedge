@@ -122,10 +122,10 @@ You can use the built in vscode debugger to get the step through debugging exper
 - [Monitoring Best Practices](https://cloud.netapp.com/blog/aws-blg-aws-monitoring-tools-and-best-practices-monitor-what-matters#H_H5)
 - [Monitoring Best Practices](https://www.infoq.com/news/2020/10/aws-dashboards/)
 - [EventBridge cross accounts](https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-cross-account-event-delivery.html)
+- [IAM Bucket Policy](https://aws.amazon.com/blogs/security/control-access-to-aws-resources-by-using-the-aws-organization-of-iam-principals/)
 
 #### Docs
-- [Mkdocs Material Docs](https://squidfunk.github.io/mkdocs-material/)
-- [Mkdocs Material Docker](https://hub.docker.com/r/squidfunk/mkdocs-material/)
+- [Retype docs](https://retype.com/)
 
 <hr>
 <hr>
