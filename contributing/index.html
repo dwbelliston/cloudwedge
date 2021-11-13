@@ -25,9 +25,9 @@
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
     <link href="/static/favicon.png" rel="icon" />
-    <link href="/resources/css/retype.css?v=1.10.690158690157" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/resources/css/retype.css?v=1.10.690159448809" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/resources/js/config.js?v=1.10.690158690157" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/config.js?v=1.10.690159448809" defer data-turbo-track="reload"></script>
     <script type="text/javascript" src="/resources/js/retype.js?v=1.10" defer data-turbo-track="reload"></script>
 </head>
     <body>
@@ -198,12 +198,6 @@
         <span>Contributing</span>
     </h1>
 </doc-anchor-target>
-<doc-anchor-target id="contributing">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#contributing">#</doc-anchor-trigger>
-        <span>Contributing</span>
-    </h2>
-</doc-anchor-target>
 <p>Some information about how to contribute to the project.</p>
 <doc-anchor-target id="updating-the-templates">
     <h2>
@@ -211,6 +205,12 @@
         <span>Updating the templates</span>
     </h2>
 </doc-anchor-target>
+<ul>
+<li><p><code v-pre>/app/cloudwedge.yaml</code> is the main file that creates the step function and lambdas that are the brain of the wedge. It also creates (conditionally) a stackset which references the <code v-pre>cloudwedge-spoke.yaml</code></p>
+</li>
+<li><p><code v-pre>/app/cloudwedge-spoke.yaml</code> is the spoke template that is deployed out to the accounts to monitor. This template creates an event rule that will capturest he relavent events and then forward events to the hub.</p>
+</li>
+</ul>
 
 
 
@@ -232,6 +232,9 @@
             <ul class="flex flex-wrap items-center text-sm">
     <li>
         <a class="block mr-4 py-2 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="/about/">About</a>
+    </li>
+    <li>
+        <a class="block mr-4 py-2 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 md:mb-0" href="/contributing/">Contributing</a>
     </li>
 </ul>
 
