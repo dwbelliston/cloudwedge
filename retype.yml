@@ -44,6 +44,8 @@ footer:
   links:
     - text: About
       link: about.md
+    - text: Contributing
+      link: contributing.md
 
 integrations:
   crisp:
