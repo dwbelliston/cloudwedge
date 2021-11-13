@@ -19,15 +19,14 @@ Do you want to deploy to a single account or a multi account structure? We will 
 Here is more information on your target deployment type:
 
 
-=== Single account deployment
+==- Single account deployment
 This is the easiest. You dont need to do anything, you can just read on.
-=== Multi account deployment using organization ids (Recommended)
+==- Multi account deployment using organization ids (Recommended)
 You will need to get two things to enter as parameters in the CloudFormation template:
 
 1. Principal orgination id (starts with a o- not an ou-). For example: 0-0123"
 2. Target organization ids into which the wedge should be deployed to (starts with an ou-). For example: ou-0123"
-===
-=== Multi account deployment using account ids
+==- Multi account deployment using account ids
 You will need to get one thing to enter as a parameter in the CloudFormation template:
 
 1. What account ids you want to deploy to, not including the one you will deploy from.
