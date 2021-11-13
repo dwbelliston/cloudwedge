@@ -164,7 +164,7 @@ Resources:
             Action: "sts:AssumeRole"
       Path: "/"
       Policies:
-        # If its not the hub account, allow forwarding to hub
+        # Allow forwarding to hub
         - PolicyName: AllowForwardToHubPolicy
           PolicyDocument:
             Version: "2012-10-17"

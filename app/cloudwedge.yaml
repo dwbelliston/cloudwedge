@@ -23,16 +23,15 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Deployment target"
+          default: "Deploy To Organizations"
         Parameters:
           - PrincipalOrganizationalId
           - OrganizationalUnitIds
-          # - SpokeAccountRegions
-      # - Label:
-      #     default: "Spoke Account Setup"
-      #   Parameters:
-      #     - SpokeAccountIds
-      #     # - SpokeAccountRegions
+      - Label:
+          default: "Deploy To Account Ids"
+        Parameters:
+          - SpokeAccountIds
+          - SpokeAccountRegions
       - Label:
           default: "Optional Features"
         Parameters:
@@ -50,16 +49,16 @@ Metadata:
         default: "CloudWedge Version"
       CloudWedgeIamRoleNamePrefix:
         default: "CloudWedge iam role prefix"
-      # SpokeAccountIds:
-      #   default: "Spoke Account Ids"
       PrincipalOrganizationalId:
         default: "Principal Organization Id"
       OrganizationalUnitIds:
-        default: "Organization Ids"
+        default: "Target Organization Ids"
       DebugLocalRoleArn:
         default: "Debug local role arn"
-      # SpokeAccountRegions:
-      #   default: "Spoke Regions"
+      SpokeAccountIds:
+        default: "Target Account Ids"
+      SpokeAccountRegions:
+        default: "Target Regions"
 
 Parameters:
 
@@ -84,10 +83,6 @@ Parameters:
     Description: Auto detect alarm level from resource name (name-prd maps to Critical)
     Default: False
 
-  # SpokeAccountIds:
-  #   Type: CommaDelimitedList
-  #   Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
-
   PrincipalOrganizationalId:
     Type: String
     Description: "The principal organization id for your organization (starts with a o- not an ou-). For example: 0-0123"
@@ -101,10 +96,14 @@ Parameters:
     Type: String
     Description: "If you want to assume the spoke worker role to debug from you local, add a role arn that you will have locally, and this will be added to the spoke role policy. For example: arn:aws:iam::ACCOUNTID:role/Your-Local-Role"
 
-  # SpokeAccountRegions:
-  #   Type: CommaDelimitedList
-  #   Default: "us-west-2,us-east-1,us-east-2"
-  #   Description: 'Comma-delimited list of the regions this stackset should be deployed to. For example: "us-west-2,us-east-1"'
+  SpokeAccountIds:
+    Type: CommaDelimitedList
+    Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+
+  SpokeAccountRegions:
+    Type: CommaDelimitedList
+    Default: "us-west-2,us-east-1,us-east-2"
+    Description: 'Comma-delimited list of the regions this stackset should be deployed to. For example: "us-west-2,us-east-1"'
 
 Conditions:
   IsUseIamRoleNamePrefix: !Not
@@ -112,16 +111,28 @@ Conditions:
       - !Ref CloudWedgeIamRoleNamePrefix
       - ""
 
-  # If orgs are provided, use the stackset spokes to deploy
-  IsUseSpokes: !Not
-    - !Equals
-      - !Join ["", !Ref OrganizationalUnitIds]
-      - ""
-
   IsUseDebugLocalRole: !Not
     - !Equals
       - !Ref DebugLocalRoleArn
       - ""
+
+  # If orgs are provided
+  IsUseOrganizationTarget: !Not
+    - !Equals
+      - !Join ["", !Ref OrganizationalUnitIds]
+      - ""
+
+  # If account ids are provided
+  IsUseAccountsTarget: !Not
+    - !Equals
+      - !Join ["", !Ref SpokeAccountIds]
+      - ""
+
+  # If either orgs or accounts are provided we will deploy stack set
+  IsUseSpokes: !Or
+    - !Condition IsUseOrganizationTarget
+    - !Condition IsUseAccountsTarget
+
 
 Globals:
   Function:
@@ -787,9 +798,10 @@ Resources:
       # PermissionModel: SELF_MANAGED
       PermissionModel: SERVICE_MANAGED
       StackInstancesGroup:
-        - DeploymentTargets:
-            OrganizationalUnitIds: !Ref OrganizationalUnitIds
-            # Accounts: !Ref SpokeAccountIds
+        - DeploymentTargets: !If
+          - IsUseOrganizationTarget
+          - OrganizationalUnitIds: !Ref OrganizationalUnitIds
+          - Accounts: !Ref SpokeAccountIds
           Regions:
             - !Ref AWS::Region
       Parameters:
