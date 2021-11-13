@@ -10,11 +10,38 @@ This tutorial will walk you through deploying CloudWedge to your AWS environment
 
 When you are ready to jump into more detail and see all the ways you can customize and tweak CloudWedge to get the most out of it, you can come back and check out the doc pages. For now, this tutorial is going to focus on the most basic implementation of CloudWedge.
 
-## For Starters
+## Prerequisites
 
 A few things to know before we get started.
 
-At this time, CloudWedge is deployed to a single AWS account and to a single AWS Region. We would suggest choosing a sandbox or dev account for your first test ride and then when you are comfortable, move up to bigger and better accounts.
+Do you want to deploy to a single account or a multi account structure? We will call the multi-account structure a HUB/SPOKE model. The Hub will contain the dashboards and alarams. The HUB is where your team will also subscribe to notifications. So, the HUB needs to be available for your team to at least read CloudWatch and subscribe to SNS.
+
+Here is more information on your target deployment type:
+
+
+=== Single account deployment
+This is the easiest. You dont need to do anything, you can just read on.
+=== Multi account deployment using organization ids (Recommended)
+You will need to get two things to enter as parameters in the CloudFormation template:
+
+1. Principal orgination id (starts with a o- not an ou-). For example: 0-0123"
+2. Target organization ids into which the wedge should be deployed to (starts with an ou-). For example: ou-0123"
+===
+=== Multi account deployment using account ids
+You will need to get one thing to enter as a parameter in the CloudFormation template:
+
+1. What account ids you want to deploy to, not including the one you will deploy from.
+
+For example, if I am going to deploy from an account called 'HUB' i dont need its ID, but I do need the account ids for the accounts that will be the 'SPOKES'
+
+You will also need to follow the informaiton here:
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html
+
+This will setup a trust relationship between your HUB account and the SPOKES that will allow you to deploy a very thin spoke template to the account ids you listed as targets. Essentially, you will need to make sure you have an IAM role called `AWSCloudFormationStackSetAdministrationRole` in the HUB account and a role called `AWSCloudFormationStackSetExecutionRole` in all of the spokes you wish to deploy to.
+===
+
+We would suggest choosing a sandbox or dev account for your first test ride and then when you are comfortable, move up to bigger and better accounts.
 
 ## To Deploy
 

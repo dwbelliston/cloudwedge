@@ -795,8 +795,12 @@ Resources:
         MaxConcurrentCount: 1
         RegionOrder:
           - !Ref AWS::Region
+      PermissionModel: !If
+        - IsUseOrganizationTarget
+        - SERVICE_MANAGED
+        - SELF_MANAGED
+      # PermissionModel: SERVICE_MANAGED
       # PermissionModel: SELF_MANAGED
-      PermissionModel: SERVICE_MANAGED
       StackInstancesGroup:
         - DeploymentTargets: !If
           - IsUseOrganizationTarget
