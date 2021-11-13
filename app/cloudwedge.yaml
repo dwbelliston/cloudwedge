@@ -782,9 +782,14 @@ Resources:
     Properties:
       StackSetName: cloudwedge-spoke-stackset
       Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
-      AutoDeployment:
-        Enabled: true
-        RetainStacksOnAccountRemoval: False
+      AutoDeployment: !If
+        - IsUseOrganizationTarget
+        - Enabled: true
+          RetainStacksOnAccountRemoval: False
+        - !Ref AWS::NoValue
+      # AutoDeployment:
+      #   Enabled: true
+      #   RetainStacksOnAccountRemoval: False
         # RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
       # CallAs: SELF
       Capabilities:

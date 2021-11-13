@@ -14,13 +14,12 @@ When you are ready to jump into more detail and see all the ways you can customi
 
 A few things to know before we get started.
 
-Do you want to deploy to a single account or a multi account structure? We will call the multi-account structure a HUB/SPOKE model. The Hub will contain the dashboards and alarams. The HUB is where your team will also subscribe to notifications. So, the HUB needs to be available for your team to at least read CloudWatch and subscribe to SNS.
+Do you want to deploy to a single account or a multi account structure? We will call the multi-account structure a HUB/SPOKE model. The Hub will contain the dashboards and alarms. The HUB is where your team will also subscribe to notifications. So, the HUB needs to be available for your team to at least read CloudWatch and subscribe to SNS.
 
-Here is more information on your target deployment type:
-
+So, what kinda of deployment do you need?
 
 ==- Single account deployment
-This is the easiest. You dont need to do anything, you can just read on.
+This is the easiest. You dont need to do any prep work, you can just read on.
 ==- Multi account deployment using organization ids (Recommended)
 You will need to get two things to enter as parameters in the CloudFormation template:
 
@@ -31,7 +30,7 @@ You will need to get one thing to enter as a parameter in the CloudFormation tem
 
 1. What account ids you want to deploy to, not including the one you will deploy from.
 
-For example, if I am going to deploy from an account called 'HUB' i dont need its ID, but I do need the account ids for the accounts that will be the 'SPOKES'
+For example, if I am going to deploy from an account called 'HUB' I dont need the HUB account ID, but I do need the account ids for the accounts that will be the 'SPOKES'
 
 You will also need to follow the informaiton here:
 
