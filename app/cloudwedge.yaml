@@ -194,11 +194,15 @@ Resources:
             Resource:
               - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
               - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
-            Principal: "*"
-                # AWS: !Ref SpokeAccountIds
-            Condition:
-                StringEquals:
+            Principal: !If
+              - IsUseOrganizationTarget
+              - "*"
+              - AWS: !Ref SpokeAccountIds
+            Condition: !If
+              - IsUseOrganizationTarget
+              - StringEquals:
                     "aws:PrincipalOrgID": !Ref PrincipalOrganizationalId
+              - !Ref AWS::NoValue
 
   ##
   ##
@@ -588,15 +592,19 @@ Resources:
       StatementId: "CloudWedgeEventBusPolicyToAllowSpokes"
       Statement:
           Effect: "Allow"
-          Principal: "*"
-              # AWS: !Ref SpokeAccountIds
-              # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
           Action:
               - "events:PutEvents"
           Resource: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
-          Condition:
-              StringEquals:
+          Principal: !If
+            - IsUseOrganizationTarget
+            - "*"
+            # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
+            - AWS: !Ref SpokeAccountIds
+          Condition: !If
+            - IsUseOrganizationTarget
+            - StringEquals:
                   "aws:PrincipalOrgID": !Ref PrincipalOrganizationalId
+            - !Ref AWS::NoValue
 
 
 # ---------------------------------------------------------------------------
