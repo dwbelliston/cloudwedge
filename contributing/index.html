@@ -25,9 +25,9 @@
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
     <link href="/static/favicon.png" rel="icon" />
-    <link href="/resources/css/retype.css?v=1.10.690312138353" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/resources/css/retype.css?v=1.10.690321631554" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/resources/js/config.js?v=1.10.690312138353" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/config.js?v=1.10.690321631554" defer data-turbo-track="reload"></script>
     <script type="text/javascript" src="/resources/js/retype.js?v=1.10" defer data-turbo-track="reload"></script>
 </head>
     <body>
@@ -219,7 +219,7 @@
 <li><p>Github actions will deploy template s3 in the wedge dev account</p>
 </li>
 <li><p>You can now create the stack using the reference from the s3 account (swap region as needed)
-<code v-pre>https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&amp;templateURL=https://cloudwedge-public-artifacts-dev-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml</code></p>
+<code v-pre>https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&amp;templateURL=https://cloudwedge-public-artifacts-prd-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml</code></p>
 </li>
 <li><p>Remember, when creating the stack you need to change the <code v-pre>ENV</code> parameter to <code v-pre>dev</code>, so that it will look at the <code v-pre>dev</code> s3 bucket instead of the <code v-pre>prd</code> bucket</p>
 </li>
