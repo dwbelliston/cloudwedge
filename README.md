@@ -20,19 +20,19 @@
   </h3>
   <h5>
 
-[Deply to N. Cali (us-west-1)](https://us-west-1.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-west-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to N. Cali (us-west-1)](https://us-west-1.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-east-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-dev-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
 
 </div>

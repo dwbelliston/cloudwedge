@@ -213,7 +213,7 @@ class SQSService(AWSService):
             # >>> Example Instance
             # 'QueueUrl': 'url'
             # 'Tags': {tagKey: tagValue}
-            # 'QueueArn':'arn:aws:sqs:us-west-2:ACCOUNTID:cc-west-dev-sqs-billing-invocation-dlq'
+            # 'QueueArn':'arn:aws:sqs:us-west-2:ACCOUNTID:cc-west-prd-sqs-billing-invocation-dlq'
             # 'ApproximateNumberOfMessages':'0'
             # 'ApproximateNumberOfMessagesNotVisible':'0'
             # 'ApproximateNumberOfMessagesDelayed':'0'
