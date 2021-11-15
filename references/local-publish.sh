@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Put the built app cloudformation into s3 (so it can be reference using url)
+
 # Package the lambda functions assets to s3 and then copy the
 # packaged yaml, which references those s3 lambda functions, to
 # the same s3 location, so the cloudformation can be deployed

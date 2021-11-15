@@ -172,7 +172,7 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
-/site
+/docsbuilt
 
 # mypy
 .mypy_cache/
@@ -220,3 +220,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/osx,linux,python,windows,visualstudiocode
+
+
+.node_modules

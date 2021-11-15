@@ -1,16 +1,16 @@
-name: dev release
+name: prd release
 
 on:
   push:
     branches:
-      - develop
+      - main
     paths-ignore:
       - "**/README.md"
       - "**/dox/**"
       - "**/admin/**"
 
 env:
-  TARGET_ENV: dev
+  TARGET_ENV: prd
 
 jobs:
   releaseDocs:
@@ -29,7 +29,7 @@ jobs:
   releaseApp:
     name: Release app updates
     runs-on: ubuntu-latest
-    environment: dev
+    environment: prd
 
     steps:
       - name: Checkout

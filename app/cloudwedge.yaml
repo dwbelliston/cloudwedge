@@ -23,10 +23,15 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Spoke Account Setup"
+          default: "Deploy To Organizations"
+        Parameters:
+          - PrincipalOrganizationalId
+          - OrganizationalUnitIds
+      - Label:
+          default: "Deploy To Account Ids"
         Parameters:
           - SpokeAccountIds
-          # - SpokeAccountRegions
+          - SpokeAccountRegions
       - Label:
           default: "Optional Features"
         Parameters:
@@ -44,12 +49,16 @@ Metadata:
         default: "CloudWedge Version"
       CloudWedgeIamRoleNamePrefix:
         default: "CloudWedge iam role prefix"
-      SpokeAccountIds:
-        default: "Spoke Account Ids"
+      PrincipalOrganizationalId:
+        default: "Principal Organization Id"
+      OrganizationalUnitIds:
+        default: "Target Organization Ids"
       DebugLocalRoleArn:
         default: "Debug local role arn"
-      # SpokeAccountRegions:
-      #   default: "Spoke Regions"
+      SpokeAccountIds:
+        default: "Target Account Ids"
+      SpokeAccountRegions:
+        default: "Target Regions"
 
 Parameters:
 
@@ -74,24 +83,57 @@ Parameters:
     Description: Auto detect alarm level from resource name (name-prd maps to Critical)
     Default: False
 
-  SpokeAccountIds:
+  PrincipalOrganizationalId:
+    Type: String
+    Description: "The principal organization id for your organization (starts with a o- not an ou-). For example: 0-0123"
+
+  OrganizationalUnitIds:
     Type: CommaDelimitedList
-    Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+    Description: "Comma-delimited list of the organization ids into which this stackset should be deployed (starts with an ou-). For example: ou-0123"
+    Default: ""
 
   DebugLocalRoleArn:
     Type: String
     Description: "If you want to assume the spoke worker role to debug from you local, add a role arn that you will have locally, and this will be added to the spoke role policy. For example: arn:aws:iam::ACCOUNTID:role/Your-Local-Role"
 
-  # SpokeAccountRegions:
-  #   Type: CommaDelimitedList
-  #   Default: "us-west-2,us-east-1,us-east-2"
-  #   Description: 'Comma-delimited list of the regions this stackset should be deployed to. For example: "us-west-2,us-east-1"'
+  SpokeAccountIds:
+    Type: CommaDelimitedList
+    Description: "Comma-delimited list of the account ids into which this stackset should be deployed. For example: 123456789123,987654321123"
+
+  SpokeAccountRegions:
+    Type: CommaDelimitedList
+    Default: "us-west-2,us-east-1,us-east-2"
+    Description: 'Comma-delimited list of the regions this stackset should be deployed to. For example: "us-west-2,us-east-1"'
 
 Conditions:
   IsUseIamRoleNamePrefix: !Not
     - !Equals
       - !Ref CloudWedgeIamRoleNamePrefix
       - ""
+
+  IsUseDebugLocalRole: !Not
+    - !Equals
+      - !Ref DebugLocalRoleArn
+      - ""
+
+  # If orgs are provided
+  IsUseOrganizationTarget: !Not
+    - !Equals
+      - !Join ["", !Ref OrganizationalUnitIds]
+      - ""
+
+  # If account ids are provided
+  IsUseAccountsTarget: !Not
+    - !Equals
+      - !Join ["", !Ref SpokeAccountIds]
+      - ""
+
+  # If either orgs or accounts are provided we will deploy stack set
+  IsUseSpokes: !Or
+    - !Condition IsUseOrganizationTarget
+    - !Condition IsUseAccountsTarget
+
+
 Globals:
   Function:
     Runtime: python3.8
@@ -152,8 +194,15 @@ Resources:
             Resource:
               - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
               - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
-            Principal:
-                AWS: !Ref SpokeAccountIds
+            Principal: !If
+              - IsUseOrganizationTarget
+              - "*"
+              - AWS: !Ref SpokeAccountIds
+            Condition: !If
+              - IsUseOrganizationTarget
+              - StringEquals:
+                    "aws:PrincipalOrgID": !Ref PrincipalOrganizationalId
+              - !Ref AWS::NoValue
 
   ##
   ##
@@ -241,7 +290,7 @@ Resources:
         Variables:
           PRIVATE_ASSETS_BUCKET: !Ref PrivateAssetsS3Bucket
           # Public assets bucket created outside of app itself
-          PUBLIC_ASSETS_BUCKET: !Sub "cloudwedge-public-artifacts-${AWS::Region}"
+          PUBLIC_ASSETS_BUCKET: !Sub "cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}"
           ALARM_ACTION_TARGET_TOPIC_ARN: !Ref InternalActionTargetTopic
           USER_TARGET_TOPIC_ARN: !Ref CloudWedgeAlertsTopic
 
@@ -543,30 +592,214 @@ Resources:
       StatementId: "CloudWedgeEventBusPolicyToAllowSpokes"
       Statement:
           Effect: "Allow"
-          Principal:
-              AWS: !Ref SpokeAccountIds
-              # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
           Action:
               - "events:PutEvents"
           Resource: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
-          # Condition:
-          #     StringEquals:
-          #         "aws:PrincipalOrgID": "o-1234567890"
+          Principal: !If
+            - IsUseOrganizationTarget
+            - "*"
+            # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
+            - AWS: !Ref SpokeAccountIds
+          Condition: !If
+            - IsUseOrganizationTarget
+            - StringEquals:
+                  "aws:PrincipalOrgID": !Ref PrincipalOrganizationalId
+            - !Ref AWS::NoValue
 
 
+# ---------------------------------------------------------------------------
+  # Role
+  # Match events to cloudwedge tags
+  # ---------------------------------------------------------------------------
+  # Role for event rule to use to start step function
+  CloudWedgeTagEventRuleRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-hub-event-rule-role"
+        - "cloudwedge-hub-event-rule-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        # If its the hub account, allow invoking step function
+        - PolicyName: StatesExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: states:StartExecution
+                Resource: !Ref CloudWedgeBuilderStateMachine
+
+  # ---------------------------------------------------------------------------
+  # Event Rules
+  # Match events to cloudwedge tags
+  # ---------------------------------------------------------------------------
+  CloudWedgeTagEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: >
+        Match events for any cloudwedge tag and send to step function so the alarms
+        can be updated
+      EventPattern:
+        detail-type:
+          - Tag Change on Resource
+        source:
+          - aws.tag
+        detail:
+          changed-tag-keys:
+            - { "prefix": "cloudwedge:" }
+          service:
+            - { "anything-but": ["cloudformation"] }
+      State: ENABLED
+      Targets:
+        # forward events to the hub step function
+        - Arn: !Ref CloudWedgeBuilderStateMachine
+          RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+          Id: "cloudwedge-tag-event-to-steps-builder"
+
+
+  CloudWedgeAutoscalingTagEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: >
+        Match events for any cloudwedge tag changed on autoscaling group and send to step function so the alarms
+        can be updated
+      EventPattern:
+        detail-type:
+          - AWS API Call via CloudTrail
+        source:
+          - aws.autoscaling
+        detail:
+          eventName: ["DeleteTags", "CreateOrUpdateTags"]
+          requestParameters:
+            tags:
+              key:
+                - { "prefix": "cloudwedge:" }
+      State: ENABLED
+      Targets:
+        #forward events to the hub step function
+        - Arn: !Ref CloudWedgeBuilderStateMachine
+          RoleArn: !GetAtt CloudWedgeTagEventRuleRole.Arn
+          Id: "cloudwedge-tag-event-to-steps-builder"
+
+  # ---------------------------------------------------------------------------
+  # Role
+  # Used by the hub accounts step function lambdas to assume into the spoke
+  # read resources, and create cloudformation stacks with alarms
+  # ---------------------------------------------------------------------------
+  CloudWedgeWorkerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !If
+        - IsUseIamRoleNamePrefix
+        - !Sub "${CloudWedgeIamRoleNamePrefix}cloudwedge-spoke-worker-role"
+        - "cloudwedge-spoke-worker-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Allow hub role to assume me
+          - Effect: "Allow"
+            Principal:
+              AWS: !GetAtt CloudWedgeHubWorkerRole.Arn
+            Action: "sts:AssumeRole"
+          - !If
+            - IsUseDebugLocalRole
+            - Effect: "Allow"
+              Principal:
+                AWS: !Ref DebugLocalRoleArn
+              Action: "sts:AssumeRole"
+            - !Ref AWS::NoValue
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      Policies:
+        - PolicyName: AccessCloudWatch
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudWatchAlarms
+                Effect: Allow
+                Action:
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:PutMetricAlarm
+                  - cloudwatch:DeleteAlarms
+                Resource: !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+              - Sid: AllowCloudWatchDashboard
+                Effect: Allow
+                Action:
+                  - cloudwatch:GetDashboard
+                  - cloudwatch:ListDashboards
+                  - cloudwatch:PutDashboard
+                  - cloudwatch:ListMetrics
+                  - cloudwatch:DeleteDashboards
+                Resource:
+                  - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:cloudwedge-*"
+                  - !Sub "arn:aws:cloudwatch::${AWS::AccountId}:dashboard/cloudwedge-*"
+        - PolicyName: AccessCloudFormation
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:UpdateStack
+                  - cloudformation:DeleteStack
+                Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/cloudwedge-*/*"
+              - Sid: AllowCloudFormationList
+                Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: "*"
+        - PolicyName: AccessS3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCloudFormationCrud
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                  - s3:GetObjectVersion
+                  - s3:GetLifecycleConfiguration
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:PutLifecycleConfiguration
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}"
+                  - !Sub "arn:${AWS::Partition}:s3:::${PrivateAssetsS3Bucket}/*"
 
   # ---------------------------------------------------------------------------
   # SpokeStackSet
   # Sets up the spokes on a stack set to send out to mutli-account/region
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-stackset.html
   # ---------------------------------------------------------------------------
   CloudWedgeSpokeStackSet:
     Type: AWS::CloudFormation::StackSet
+    Condition: IsUseSpokes
     Properties:
       StackSetName: cloudwedge-spoke-stackset
       Description: cloudwedge spoke stack sets up role to be assumed by hub and events forwarder
+      AutoDeployment: !If
+        - IsUseOrganizationTarget
+        - Enabled: true
+          RetainStacksOnAccountRemoval: False
+        - !Ref AWS::NoValue
       # AutoDeployment:
       #   Enabled: true
-      #   RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      #   RetainStacksOnAccountRemoval: False
+        # RetainStacksOnAccountRemoval: !Ref RetainStacksOnAccountRemovalFromOrg
+      # CallAs: SELF
       Capabilities:
         - CAPABILITY_IAM
         - CAPABILITY_NAMED_IAM
@@ -575,27 +808,33 @@ Resources:
         MaxConcurrentCount: 1
         RegionOrder:
           - !Ref AWS::Region
-      PermissionModel: SELF_MANAGED
+      PermissionModel: !If
+        - IsUseOrganizationTarget
+        - SERVICE_MANAGED
+        - SELF_MANAGED
+      # PermissionModel: SERVICE_MANAGED
+      # PermissionModel: SELF_MANAGED
       StackInstancesGroup:
-        - DeploymentTargets:
-            # OrganizationalUnitIds: !Ref OrganizationalUnits
-            Accounts: !Ref SpokeAccountIds
+        - DeploymentTargets: !If
+          - IsUseOrganizationTarget
+          - OrganizationalUnitIds: !Ref OrganizationalUnitIds
+          - Accounts: !Ref SpokeAccountIds
           Regions:
             - !Ref AWS::Region
       Parameters:
         # Used for parameter overrides, if necessary
-        - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
-          ParameterValue: !Ref CloudWedgeBuilderStateMachine
         - ParameterKey: CloudWedgeEnvironment
           ParameterValue: !Ref CloudWedgeEnvironment
-        - ParameterKey: HubAccountId
-          ParameterValue: !Ref AWS::AccountId
-        - ParameterKey: HubAccountWorkerRoleArn
-          ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
         - ParameterKey: CloudWedgeIamRoleNamePrefix
           ParameterValue: !Ref CloudWedgeIamRoleNamePrefix
-        - ParameterKey: HubPrivateAssetsS3Bucket
+        - ParameterKey: HubAccountId
+          ParameterValue: !Ref AWS::AccountId
+        - ParameterKey: HubPrivateAssetsS3BucketName
           ParameterValue: !Ref PrivateAssetsS3Bucket
+        - ParameterKey: HubAccountWorkerRoleArn
+          ParameterValue: !GetAtt CloudWedgeHubWorkerRole.Arn
+        - ParameterKey: HubCloudWedgeStepFunctionBuilderArn
+          ParameterValue: !Ref CloudWedgeBuilderStateMachine
         - ParameterKey: HubDebugLocalRoleArn
           ParameterValue: !Ref DebugLocalRoleArn
-      TemplateURL: !Sub "https://cloudwedge-public-artifacts-${AWS::Region}.s3-${AWS::Region}.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"
+      TemplateURL: !Sub "https://cloudwedge-public-artifacts-${CloudWedgeEnvironment}-${AWS::Region}.s3.amazonaws.com/public/cloudwedge/${CloudWedgeVersion}/cloudwedge-spoke.yaml"

@@ -5,25 +5,38 @@ icon: home
 
 # Welcome to CloudWedge
 
-[CloudWedge](https://cloudwedge.io/) is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.
+CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.
 
-![](static/wedge-hero.png)
+![](static/wedge-banner.png)
 
-## Why use CloudWedge
+---
+
+## Features
 
 CloudWedge is perfect for when you want to use the native AWS monitoring services, but you dont want to fuss with the all the implementation details. CloudWedge will provide the monitoring alarms and the dashboards you would have built by hand (or in CloudFormation) and give you back that time to focus on what really matters.
 
 Essentially, CloudWedge is doing the "undifferentiated heavy lifting" of setting up CloudWatch and and wiring it into an alerting pipeline using SNS.
 
-[!badge variant="success" size="xl" icon=":cloud:" text="Native AWS"] CloudWedge is using 100% AWS native services from the cradle to the grave.
+#### :cloud: Native AWS
 
-[!badge variant="success" size="xl" icon=":closed_lock_with_key:" text="100% Privacy"] Your data never leaves your account. No 3rd party to ship data to, its all contained within the walls of your own home. Look at the source code yourself, we are not hiding anything. You have total control.
+CloudWedge is using 100% AWS native services from the cradle to the grave.
 
-[!badge variant="success" size="xl" icon=":large_green_circle:" text="Operationally Easy"] You only have to learn the custom CloudWedge "tags" and add them to your resources.
+#### :closed_lock_with_key: 100% Privacy
 
-[!badge variant="success" size="xl" icon=":raising_hand:" text="Opt-In Only"] You choose what to monitoring and how.
+Your data never leaves your account. No 3rd party to ship data to, its all contained within the walls of your own home. Look at the source code yourself, we are not hiding anything. You have total control.
 
-[!badge variant="success" size="xl" icon=":boom:" text="Event Based"] You change your environment, CloudWedge will update itself. Its not as sophisticated as true AI, but you might start to think so.
+#### :white_check_mark: Easy install
+
+[Installation](guides/getting-started.md) takes only a minute. Them you only have to learn the custom CloudWedge "tags" and add them to your resources.
+
+
+#### :raising_hand: Opt-In Only
+
+You choose what to monitoring and how. Decided the resources you want supported from the available AWS [services](services/index.md).
+
+#### :boom: Event Driven
+
+ You change your environment, CloudWedge will update itself. Its not as sophisticated as true AI, but you might start to think so.
 
 
 !!!warning CloudWedge is not
@@ -45,6 +58,8 @@ Essentially, CloudWedge is doing the "undifferentiated heavy lifting" of setting
 
 !!!
 
+---
+
 
 ## How CloudWedge works
 
@@ -61,6 +76,8 @@ Getting a little more technical, here is a breakdown of the interactions between
 |  :robot_face:   | CloudWedge uses the AWS CloudFormation api to deploy the CloudFormation template, which does all the creation of the alarms and dashboards.                       |
 |  :cloud:   | AWS sends you a bill                                                                                                                                              |
 |  :female-technologist:   | You do more important things                                                                                                                                      |
+
+---
 
 ## Example Usage
 
@@ -122,14 +139,19 @@ cloudwedge:level
 | **Example**     | `critical` |
 ===
 
+---
+
 ## Deployment
 
 CloudWedge is packaged in a CloudFormation template. This makes is very easy to deploy. You just need to get a url reference to the pre-baked CloudFormation and then use the AWS CloudFormation console to deploy the stack into your account.
+
+---
 
 ## Getting Started
 
 It's always nice to have someone show you around a new place. Check out the [Getting Started](./guides/getting-started.md) guide to get comfortable using CloudWedge.
 
+---
 
 ## License
 

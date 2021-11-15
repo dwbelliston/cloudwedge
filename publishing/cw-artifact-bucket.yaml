@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Stack to create infrastructure for publishing CloudWedge.
+
+  Resources: [ Public Artifacts Bucket ]
+
+Parameters:
+  Env:
+    Description: Environment deploy to
+    Type: String
+
+Resources:
+
+  CloudWedgePublicArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub "cloudwedge-public-artifacts-${Env}-${AWS::Region}"
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbortIncompleteMultipartUploadAfter1Day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+          - Id: TransitionWithAge
+            Status: Enabled
+            Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: FALSE
+        BlockPublicPolicy: FALSE
+        IgnorePublicAcls: FALSE
+        RestrictPublicBuckets: FALSE
+      Tags:
+        - Key: app:name
+          Value: cloudwedge
+
+  CloudWedgePublicArtifactsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CloudWedgePublicArtifactsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPublic
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource:
+              - !Sub arn:aws:s3:::${CloudWedgePublicArtifactsBucket}/public/*
+
+Outputs:
+  CloudWedgePublicArtifactsBucket:
+    Description: CloudWedge public artifacts bucket
+    Value: !Ref CloudWedgePublicArtifactsBucket

@@ -4,23 +4,28 @@
   "description": "CloudWedge",
   "scripts": {
     "version": "echo $npm_package_version",
-    "build": "./publishing/scripts/build.sh $1",
-    "publish": "./publishing/scripts/publish.sh",
-    "deploy": "npm run build && ./publishing/scripts/deploy.sh",
-    "gitlabdowndeploy": "npm run build && ./publishing/scripts/when-gitlab-is-down-scripts.sh",
-    "roll": "npm run build && npm run publish",
+    "app": "",
+    "app:build": "./publishing/scripts/app-build.sh",
+    "app:infra": "./publishing/scripts/app-infra.sh",
+    "app:publish": "./publishing/scripts/app-publish.sh",
+    "docs": "",
     "docs:local": "retype watch",
-    "docs:build": "",
-    "docs:publish": "npm run docs:build && ./publishing/scripts/docs.sh",
-    "local:get": "npm run build GetResourcesFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/get_resources/input.json GetResourcesFunction",
-    "local:create": "npm run build CreateStacksFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/create_stacks/input.json CreateStacksFunction",
-    "local:deploy": "npm run build DeployStackFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/deploy_stack/input.json DeployStackFunction",
-    "local:status": "npm run build CheckStatusFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/check_status/input.json CheckStatusFunction",
-    "local:prune": "npm run build TriageStacksFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/triage_stacks/input.json TriageStacksFunction",
-    "local:delete": "npm run build DeleteStackFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/delete_stack/input.json DeleteStackFunction",
-    "local:ingest": "npm run build IngestAlertFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/ingest_alert/input.json IngestAlertFunction",
-    "local:cleanup": "npm run build CleanupResourcesFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/cleanup_resources/input.json CleanupResourcesFunction"
+    "docs:build": "retype build",
+    "local": "",
+    "local:gitlabdowndeploy": "npm run app:build && ./publishing/scripts/when-gitlab-is-down-scripts.sh",
+    "local:deployapp": "npm run app:build && ./publishing/scripts/deploy.sh",
+    "local:get": "npm run app:build GetResourcesFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/get_resources/input.json GetResourcesFunction",
+    "local:create": "npm run app:build CreateStacksFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/create_stacks/input.json CreateStacksFunction",
+    "local:deploy": "npm run app:build DeployStackFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/deploy_stack/input.json DeployStackFunction",
+    "local:status": "npm run app:build CheckStatusFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/check_status/input.json CheckStatusFunction",
+    "local:prune": "npm run app:build TriageStacksFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/triage_stacks/input.json TriageStacksFunction",
+    "local:delete": "npm run app:build DeleteStackFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/delete_stack/input.json DeleteStackFunction",
+    "local:ingest": "npm run app:build IngestAlertFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/ingest_alert/input.json IngestAlertFunction",
+    "local:cleanup": "npm run app:build CleanupResourcesFunction && sam local invoke -d 5858 --env-vars app/config/local.env.json --event app/src/cleanup_resources/input.json CleanupResourcesFunction"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "retype": "^0.2.0"
+  }
 }

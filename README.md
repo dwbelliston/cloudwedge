@@ -20,15 +20,19 @@
   </h3>
   <h5>
 
-[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-west-2.s3-us-west-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to N. Cali (us-west-1)](https://us-west-1.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-east-1.s3-us-east-1.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
   <h5>
 
-[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-us-east-2.s3-us-east-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+  </h5>
+  <h5>
+
+[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
   </h5>
 
 </div>
@@ -61,8 +65,8 @@
 |   |-- media                                 # Various images and media assests used in the app, published to s3
 |   |-- publishing.yaml                       # Template file to setup some of the resources needed to provide this to the public
 |   `-- scripts                               # Bash scripts for publishing the application
-|-- docs/                                     # Markdown files for the documentation page
-`-- mkdocs.yml                                # Configurations for making the documentation page
+|-- docs/                                     # Markdown files for the retype page, published to Github pages
+`-- retype.yml                                # Configurations for making the documentation page
 ```
 
 ## Developing
@@ -118,10 +122,11 @@ You can use the built in vscode debugger to get the step through debugging exper
 - [Monitoring Best Practices](https://cloud.netapp.com/blog/aws-blg-aws-monitoring-tools-and-best-practices-monitor-what-matters#H_H5)
 - [Monitoring Best Practices](https://www.infoq.com/news/2020/10/aws-dashboards/)
 - [EventBridge cross accounts](https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-cross-account-event-delivery.html)
+- [IAM Bucket Policy](https://aws.amazon.com/blogs/security/control-access-to-aws-resources-by-using-the-aws-organization-of-iam-principals/)
+- [IAM PrincipalOrgId](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-principalorgid)
 
 #### Docs
-- [Mkdocs Material Docs](https://squidfunk.github.io/mkdocs-material/)
-- [Mkdocs Material Docker](https://hub.docker.com/r/squidfunk/mkdocs-material/)
+- [Retype docs](https://retype.com/)
 
 <hr>
 <hr>

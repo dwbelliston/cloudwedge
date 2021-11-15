@@ -2,6 +2,7 @@
 from os import environ
 
 import boto3
+
 from cloudwedge.utils.logger import get_logger
 
 # Setup logger

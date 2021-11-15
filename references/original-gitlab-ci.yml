@@ -31,26 +31,6 @@ variables:
 # having IFS set to the non-default was messing with stripping the whitespace).
 - echo "REGIONS - ${REGION_LIST[@]}"
 
-Lint Publishing Cfn:
-  stage: lint
-  allow_failure: false
-  rules:
-    - changes:
-        - publishing/*.{yaml,yml}
-  tags:
-    - docker
-    - sandbox
-    - shared-runner
-    - us-west-2
-  before_script:
-    # Load up variables
-    - *set_env_variables
-  script:
-    - pip install cfn-lint
-    # Find all yaml files
-    - FILES=($(find ./publishing -iname *.yaml -o -iname *.yml))
-    # Check each file
-    - for TEMPLATE in "${FILES[@]}"; do cfn-lint --info --regions $REGION_LIST --ignore-checks=W -t $TEMPLATE; done
 
 
 # Deploys an artifact bucket for each region

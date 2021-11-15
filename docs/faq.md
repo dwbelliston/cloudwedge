@@ -42,10 +42,14 @@ flowchart TD
     classDef question fill:#818CF8,color:#fff;
 ```
 
+---
+
 ## What does CloudWedge cost?
 
 We havent found a way to charge yet. So.. I guess its free. :money_with_wings:
 The only cost to you will be your AWS bill to have CloudWatch alarms and dashboards.
+
+---
 
 ## Can you help me set it up?
 

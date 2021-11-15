@@ -10,12 +10,12 @@ import time
 from os import environ
 from typing import Dict, List
 
+from resource_alarm_factory import ResourceAlarmFactory
+
 from cloudwedge.models import AWSResource
 from cloudwedge.services import ServiceRegistry
 from cloudwedge.utils.logger import get_logger
 from cloudwedge.utils.s3 import s3_save_object
-
-from resource_alarm_factory import ResourceAlarmFactory
 
 PRIVATE_ASSETS_BUCKET = environ.get('PRIVATE_ASSETS_BUCKET')
 

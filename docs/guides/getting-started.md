@@ -10,11 +10,36 @@ This tutorial will walk you through deploying CloudWedge to your AWS environment
 
 When you are ready to jump into more detail and see all the ways you can customize and tweak CloudWedge to get the most out of it, you can come back and check out the doc pages. For now, this tutorial is going to focus on the most basic implementation of CloudWedge.
 
-## For Starters
+## Prerequisites
 
 A few things to know before we get started.
 
-At this time, CloudWedge is deployed to a single AWS account and to a single AWS Region. We would suggest choosing a sandbox or dev account for your first test ride and then when you are comfortable, move up to bigger and better accounts.
+Do you want to deploy to a single account or a multi account structure? We will call the multi-account structure a HUB/SPOKE model. The Hub will contain the dashboards and alarms. The HUB is where your team will also subscribe to notifications. So, the HUB needs to be available for your team to at least read CloudWatch and subscribe to SNS.
+
+So, what kinda of deployment do you need?
+
+==- Single account deployment
+This is the easiest. You dont need to do any prep work, you can just read on.
+==- Multi account deployment using organization ids (Recommended)
+You will need to get two things to enter as parameters in the CloudFormation template:
+
+1. Principal orgination id (starts with a o- not an ou-). For example: 0-0123"
+2. Target organization ids into which the wedge should be deployed to (starts with an ou-). For example: ou-0123"
+==- Multi account deployment using account ids
+You will need to get one thing to enter as a parameter in the CloudFormation template:
+
+1. What account ids you want to deploy to, not including the one you will deploy from.
+
+For example, if I am going to deploy from an account called 'HUB' I dont need the HUB account ID, but I do need the account ids for the accounts that will be the 'SPOKES'
+
+You will also need to follow the informaiton here:
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html
+
+This will setup a trust relationship between your HUB account and the SPOKES that will allow you to deploy a very thin spoke template to the account ids you listed as targets. Essentially, you will need to make sure you have an IAM role called `AWSCloudFormationStackSetAdministrationRole` in the HUB account and a role called `AWSCloudFormationStackSetExecutionRole` in all of the spokes you wish to deploy to.
+===
+
+We would suggest choosing a sandbox or dev account for your first test ride and then when you are comfortable, move up to bigger and better accounts.
 
 ## To Deploy
 
@@ -29,7 +54,7 @@ To make it easy to deploy, we have created the link to deploy this to CloudForma
 Here is the full link, you can copy and past this into your browser.
 
 ```
-https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts.s3-us-west-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
+https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
 ```
 
 Notice that the link is specific to the `us-west-2` region. You can change out the region identifier to any of the regions you would like.
@@ -48,19 +73,21 @@ Adding to the base url, we are going to identify the stack template we want to c
 
 ```
 ?stackName=cloudwedge
-&templateURL=https://cloudwedge-public-artifacts.s3-us-west-2.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
+&templateURL=https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml
 ```
 
-Putting these together we tell CloudFormation to create a stack called `cloudwedge` using the template located at `https://cloudwedge-public-artifacts.s3-us-west-2.amazonaws.com/public/...`
+Putting these together we tell CloudFormation to create a stack called `cloudwedge` using the template located at `https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/...`
 
 You will also note that the base url is set to the `us-west-2 (Oregon)` AWS region. You can change that to target the region you want to deploy to.
 ===
 
-[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Oregon" target="blank"](https://retype.com/)
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to N. Cali" target="blank"](https://us-west-1.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
 
-[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to N Virginia" target="blank"](https://retype.com/)
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Oregon" target="blank"](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
 
-[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Ohio" target="blank"](https://retype.com/)
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to N Virginia" target="blank"](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
+
+[!button variant="info" size="l" icon=":rocket:" iconAlign="right" text="Deploy to Ohio" target="blank"](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
 
 
 Once you clicked the link to deploy from above, you will now be in the AWS console.
