@@ -9,6 +9,7 @@ from os import environ
 from typing import Any, List, Tuple
 
 import boto3
+
 from cloudwedge.models import AWSResource, AWSService
 from cloudwedge.utils.logger import get_logger
 from cloudwedge.utils.tags import TagsApi
@@ -100,6 +101,7 @@ class StateMachineService(AWSService):
                     ],
                     "view": "singleValue",
                     "region": REGION,
+                    "setPeriodToTimeRange": False,
                     "stat": "Sum",
                     "period": 86400,
                     "title": "Status"
@@ -124,6 +126,7 @@ class StateMachineService(AWSService):
                     "view": "singleValue",
                     "region": REGION,
                     "stat": "Sum",
+                    "setPeriodToTimeRange": False,
                     "period": 86400,
                     "title": "Activity Last 24 hrs"
                 }
