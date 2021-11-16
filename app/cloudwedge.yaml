@@ -368,6 +368,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     DependsOn: [ CleanupResourcesFunction ]
     Properties:
+      LogGroupName: !Sub /aws/lambda/${CleanupResourcesFunction}
       RetentionInDays: 7
 
   CleanupResourcesFunction:
