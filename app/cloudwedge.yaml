@@ -197,7 +197,10 @@ Resources:
             Principal: !If
               - IsUseOrganizationTarget
               - "*"
-              - AWS: !Ref SpokeAccountIds
+              - !If
+                - IsUseAccountsTarget
+                - AWS: !Ref SpokeAccountIds
+                - !Ref AWS::AccountId
             Condition: !If
               - IsUseOrganizationTarget
               - StringEquals:
@@ -599,7 +602,10 @@ Resources:
             - IsUseOrganizationTarget
             - "*"
             # Spoke account ids will be transformed to the root arns: - "arn:aws:iam::123456789:root"
-            - AWS: !Ref SpokeAccountIds
+            - !If
+              - IsUseAccountsTarget
+              - AWS: !Ref SpokeAccountIds
+              - !Ref AWS::AccountId
           Condition: !If
             - IsUseOrganizationTarget
             - StringEquals:
