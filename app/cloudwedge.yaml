@@ -364,6 +364,12 @@ Resources:
   # Function
   # Used by custom resource
   # ---------------------------------------------------------------------------
+  CleanupResourcesFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DependsOn: [ CleanupResourcesFunction ]
+    Properties:
+      RetentionInDays: 7
+
   CleanupResourcesFunction:
     Type: AWS::Serverless::Function
     Properties:
