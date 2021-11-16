@@ -598,8 +598,8 @@ Resources:
           Action:
               - "events:PutEvents"
           Resource: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
-          Principal:
-            !If [IsUseOrganizationTarget, "*", !If [IsUseAccountsTarget, !Ref SpokeAccountIds, !Ref AWS::AccountId]]
+          Principal: "*"
+            # !If [IsUseOrganizationTarget, "*", !If [IsUseAccountsTarget, !Ref SpokeAccountIds, !Ref AWS::AccountId]]
           # Principal: !If
           #   - IsUseOrganizationTarget
           #   - "*"
