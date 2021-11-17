@@ -13,34 +13,9 @@
 </p>
 
 
-
-<div align="center" style=" margin-bottom: 4rem;" >
-  <h3>
-    Deploy CloudWedge 🚀
-  </h3>
-  <h5>
-
-[Deply to N. Cali (us-west-1)](https://us-west-1.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
-  </h5>
-  <h5>
-
-[Deply to Oregon (us-west-2)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-west-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
-  </h5>
-  <h5>
-
-[Deply to N. Virginia (us-east-1)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-1.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
-  </h5>
-  <h5>
-
-[Deply to Ohio (us-east-2)](https://us-east-2.console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/create/template?stackName=cloudwedge&templateURL=https://cloudwedge-public-artifacts-prd-us-east-2.s3.amazonaws.com/public/cloudwedge/latest/cloudwedge.yaml)
-  </h5>
-
-</div>
-
-
 # CloudWedge
 
-<p align="center" style="margin-top: 2rem; margin-bottom: 4rem;"><strong>View Documentation</strong>: <a href="http://cloudwedge.1strategy.com" target="_blank">https://cloudwedge.1strategy.com</a>
+<p align="center" style="margin-top: 2rem; margin-bottom: 4rem;"><strong>View Documentation</strong>: <a href="https://cloudwedge.io" target="_blank">https://cloudwedge.io</a>
 </p>
 
 
