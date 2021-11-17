@@ -11,6 +11,10 @@ CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your abili
 
 ---
 
+[!embed](https://youtu.be/pb0Sv-Y_6RY)
+
+---
+
 ## Features
 
 CloudWedge is perfect for when you want to use the native AWS monitoring services, but you dont want to fuss with the all the implementation details. CloudWedge will provide the monitoring alarms and the dashboards you would have built by hand (or in CloudFormation) and give you back that time to focus on what really matters.
