@@ -1,15 +1,9 @@
-
 <p align="center">
-  <img width="100%" src="docs/static/light-logo-full.svg">
+  <img width="100%" src="docs/static/wedge-hero.png">
 </p>
 
 <p align="center">
     <em>CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your ability to get up and running with native AWS monitoring services.</em>
-</p>
-
-
-<p align="center">
-  <img width="100%" src="docs/static/wedge-hero.png">
 </p>
 
 
