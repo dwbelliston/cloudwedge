@@ -108,7 +108,17 @@ Here you can see an overview of all the resources being created and also a full 
 
 ![create](../static/tutorial//deploy_step3_parameters.png)
 
-Parameters can be left alone, in future versions we may have some configuration options here, but for now just continue. If you really want, you can change the stack name.
+Depending on what your target deployment is, you are required to supply certain parameters.
+
+| Parameter  | UseCase | Description |
+| --- | --- | --- |
+| Principal Organization Id | [!badge variant="success" text="Using AWS Organizations"] | This will be used in iam policies conditional statements |
+| Target Organization Ids | [!badge variant="success" text="Using AWS Organizations"] | List of organizations to deploy to |
+| Target Account Ids | [!badge variant="primary" text="Using Account Ids"] | List of account ids that will be the 'spokes' that will be monitored |
+| Target Regions | [!badge variant="primary" text="Using Account Ids"] | Regions to monitor |
+|  CloudWedge iam role prefix | [!badge variant="success" text="Using AWS Organizations"] [!badge variant="primary" text="Using Account Ids"] [!badge variant="Secondary" text="Optional"] |This will append a certain prefix to the roles that are created by CloudWedge |
+|  Local debug role arn | [!badge variant="success" text="Using AWS Organizations"] [!badge variant="primary" text="Using Account Ids"] [!badge variant="Secondary" text="Optional"] | If you want to run locally and assume the CloudWedge roles for testing |
+
 
 ### Stack Options
 

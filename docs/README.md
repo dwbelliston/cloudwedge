@@ -11,7 +11,7 @@ CloudWedge is an AWS Cloudwatch monitoring framework that accelerates your abili
 
 ---
 
-[!embed](https://youtu.be/pb0Sv-Y_6RY)
+[!embed](https://youtu.be/qXGSXMSRjLc)
 
 ---
 
