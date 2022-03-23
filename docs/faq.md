@@ -11,7 +11,7 @@ Here are a few questions to get a feel for what you should do.
 ```mermaid
 flowchart TD
     00(Is CloudWedge a fit for me?);
-    A(Does your organization need a monitoring solution?);
+    A(Does your organization have an existing cloud monitoring solution?);
     B(Is your organization deploying a solution and can you wait for it?);
     C(Do you need fine grain access to monitoring controls?);
     D(Are you okay deploying a third party solution or shipping your data to them?);
