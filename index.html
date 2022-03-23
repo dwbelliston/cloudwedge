@@ -27,10 +27,11 @@
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
     <link href="/static/favicon.png" rel="icon" />
-    <link href="/resources/css/retype.css?v=1.10.690439396287" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/resources/css/retype.css?v=1.11.2.701394060871" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/resources/js/config.js?v=1.10.690439396287" defer data-turbo-track="reload"></script>
-    <script type="text/javascript" src="/resources/js/retype.js?v=1.10" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/config.js?v=1.11.2.701394060871" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/retype.js?v=1.11.2" defer data-turbo-track="reload"></script>
+    <script id="lunr-js" type="text/javascript" src="/resources/js/lunr.js?v=1.11.2.701394060871" defer></script>
 </head>
     <body>
         <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -85,7 +86,7 @@
                     </div>
 
                     <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
-                    style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search docs" />
+                    style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search" />
                 </div>
 
                 <!-- Mobile search button mock -->
@@ -132,9 +133,10 @@
         <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
     </div>
 
+
     <div class="flex-shrink-0 mt-auto bg-transparent dark:border-dark-650">
         <a
-    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in"
+    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by"
     target="_blank"
     href="https://retype.com/"
     rel="noopener"
@@ -172,8 +174,9 @@
                 </nav>
             </div>
 
+
             <a
-    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in"
+    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by"
     target="_blank"
     href="https://retype.com/"
     rel="noopener"
@@ -210,14 +213,6 @@
 </figure>
 </p>
 <hr />
-<p>
-<figure>
-    <div class="relative w-full mb-6 overflow-hidden pt-9/16">
-        <iframe class="w-full h-full border-0 absolute inset-0" src="https://www.youtube.com/embed/qXGSXMSRjLc"></iframe>
-    </div>
-</figure>
-</p>
-<hr />
 <doc-anchor-target id="features">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#features">#</doc-anchor-trigger>
@@ -226,37 +221,37 @@
 </doc-anchor-target>
 <p>CloudWedge is perfect for when you want to use the native AWS monitoring services, but you dont want to fuss with the all the implementation details. CloudWedge will provide the monitoring alarms and the dashboards you would have built by hand (or in CloudFormation) and give you back that time to focus on what really matters.</p>
 <p>Essentially, CloudWedge is doing the &quot;undifferentiated heavy lifting&quot; of setting up CloudWatch and and wiring it into an alerting pipeline using SNS.</p>
-<doc-anchor-target id="cloud-native-aws">
+<doc-anchor-target id="native-aws">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#cloud-native-aws">#</doc-anchor-trigger>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#native-aws">#</doc-anchor-trigger>
         <span><span class="docs-emoji">&#x2601;&#xFE0F;</span> Native AWS</span>
     </h4>
 </doc-anchor-target>
 <p>CloudWedge is using 100% AWS native services from the cradle to the grave.</p>
-<doc-anchor-target id="closed_lock_with_key-100-privacy">
+<doc-anchor-target id="100-privacy">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#closed_lock_with_key-100-privacy">#</doc-anchor-trigger>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#100-privacy">#</doc-anchor-trigger>
         <span><span class="docs-emoji">&#x1F510;</span> 100% Privacy</span>
     </h4>
 </doc-anchor-target>
 <p>Your data never leaves your account. No 3rd party to ship data to, its all contained within the walls of your own home. Look at the source code yourself, we are not hiding anything. You have total control.</p>
-<doc-anchor-target id="white_check_mark-easy-install">
+<doc-anchor-target id="easy-install">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#white_check_mark-easy-install">#</doc-anchor-trigger>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#easy-install">#</doc-anchor-trigger>
         <span><span class="docs-emoji">&#x2705;</span> Easy install</span>
     </h4>
 </doc-anchor-target>
 <p><a href="guides/getting-started/">Installation</a> takes only a minute. Them you only have to learn the custom CloudWedge &quot;tags&quot; and add them to your resources.</p>
-<doc-anchor-target id="raising_hand-opt-in-only">
+<doc-anchor-target id="opt-in-only">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#raising_hand-opt-in-only">#</doc-anchor-trigger>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#opt-in-only">#</doc-anchor-trigger>
         <span><span class="docs-emoji">&#x1F64B;</span> Opt-In Only</span>
     </h4>
 </doc-anchor-target>
 <p>You choose what to monitoring and how. Decided the resources you want supported from the available AWS <a href="services/">services</a>.</p>
-<doc-anchor-target id="boom-event-driven">
+<doc-anchor-target id="event-driven">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#boom-event-driven">#</doc-anchor-trigger>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#event-driven">#</doc-anchor-trigger>
         <span><span class="docs-emoji">&#x1F4A5;</span> Event Driven</span>
     </h4>
 </doc-anchor-target>
@@ -314,6 +309,7 @@
     </h2>
 </doc-anchor-target>
 <p>Getting a little more technical, here is a breakdown of the interactions between you, AWS and CloudWedge:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
@@ -360,6 +356,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <hr />
 <doc-anchor-target id="example-usage">
     <h2>
@@ -392,6 +389,7 @@
         <span>Tag Details</span>
     </h5>
 </doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
@@ -422,6 +420,7 @@
 </tr>
 </tbody>
 </table>
+</div>
    </doc-panel>
    <doc-panel id="badge-variant-primary-icon-tag-iconalign-left-text-cloudwedge-owner" collapsed>
        <template #title><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-blue-600 bg-blue-100 h-6 px-2 text-xs rounded-md">
@@ -443,6 +442,7 @@
         <span>Tag Details</span>
     </h5>
 </doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
@@ -473,6 +473,7 @@
 </tr>
 </tbody>
 </table>
+</div>
    </doc-panel>
    <doc-panel id="badge-variant-primary-icon-tag-iconalign-left-text-cloudwedge-level" collapsed>
        <template #title><span class="no-link inline-flex items-center justify-center font-medium leading-none whitespace-nowrap text-blue-600 bg-blue-100 h-6 px-2 text-xs rounded-md">
@@ -494,6 +495,7 @@
         <span>Tag Details</span>
     </h5>
 </doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
@@ -524,6 +526,7 @@
 </tr>
 </tbody>
 </table>
+</div>
    </doc-panel>
 </doc-panels>
 <hr />
@@ -608,7 +611,7 @@
 </ul>
 
     </div>
-    <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>© Copyright 2021. <a href="https://1Strategy.com/">1Strategy.com</a> All rights reserved.</p>
+    <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>© Copyright 2022. <a href="https://1Strategy.com/">1Strategy.com</a> All rights reserved.</p>
 </div>
 </footer>
 
